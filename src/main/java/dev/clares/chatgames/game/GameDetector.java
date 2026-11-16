@@ -59,7 +59,7 @@ public final class GameDetector {
     private static Optional<String> explicitTrivia(String[] lines) {
         for(int i=0;i<lines.length;i++) {
             String instruction=normalized(lines[i]);
-            if (!instruction.matches("(?s).*(?:seconds to answer|segundos para responder:|responde correctamente:).*")) continue;
+            if (!instruction.matches("(?s).*(?:seconds to answer|segundos para responder|responde correctamente:).*")) continue;
             StringBuilder question=new StringBuilder();
             boolean quoted=false;
             for(int j=i+1;j<lines.length;j++) {
@@ -77,6 +77,22 @@ public final class GameDetector {
             if(!question.isEmpty() && question.length()<=300) return Optional.of(question.toString().replaceAll("^[`\"‘]|[`\"’]$", "").strip());
         }
         return Optional.empty();
+    }
+    /** Wait for missing text, never for a quiet period in the chat. */
+    public static Optional<Detection> detectComplete(String block,boolean contextual) {
+        String text=block.strip();
+        if(text.isEmpty() || text.endsWith(":") || text.chars().filter(c->c=='`').count()%2!=0)return Optional.empty();
+        if(text.matches("(?s).*[+*/%^×÷−–—·✕=-]$"))return Optional.empty();
+        return detect(block,contextual).filter(d -> {
+            if(d.type()!=GameType.TRIVIA)return true;
+            if(d.question().contains("?"))return true;
+            // Some observed questions have no '?'; their closing quotes mark completion.
+            String joined=block.replaceAll("\\s+"," ");
+            return joined.contains("`"+d.question()+"`") || joined.contains("\""+d.question()+"\"");
+        });
+    }
+    public static boolean playerChat(String line) {
+        return line.contains("»") || line.stripLeading().matches("^<[^>]{1,40}>.*");
     }
     public static Optional<Detection> detect(String block, boolean contextual) {
         if (winner(block)) return Optional.empty();

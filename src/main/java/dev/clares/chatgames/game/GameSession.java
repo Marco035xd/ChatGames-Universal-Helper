@@ -5,6 +5,8 @@ public final class GameSession {
     public GameType type = GameType.UNKNOWN;
     public String question = "", normalizedQuestion = "", answer = "", source = "";
     public long startTime = System.currentTimeMillis(), scheduledSendTime;
+    public long receivedAtNanos=System.nanoTime(), responseDelayMs;
+    public boolean firstSendScheduled;
     public long automationEpoch, gameEpoch;
     public String wordContext = "";
     public volatile GameState status = GameState.DETECTED;

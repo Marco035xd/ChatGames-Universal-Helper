@@ -84,7 +84,7 @@ public final class TimeEditorScreen extends Screen {
         c.text(font,draft.mode==TimeDraft.Mode.FIXED?"No se usa":"Máximo (s)",x+24+(w-36)/2,y+68,draft.mode==TimeDraft.Mode.RANDOM?GuiTheme.TEXT:GuiTheme.MUTED);
         c.text(font,"Opciones rápidas",x+12,y+128,GuiTheme.MUTED);
         String error=draft.error();String message=!failure.isEmpty()?failure:!error.isEmpty()?error:
-            draft.mode==TimeDraft.Mode.INHERIT?"General actual: "+TimeDraft.describe(settings.get().delayFor("")):"0 s = sin espera añadida tras resolver el reto.";
+            draft.mode==TimeDraft.Mode.INHERIT?"General actual: "+TimeDraft.describe(settings.get().delayFor("")):"0 s = envío en cuanto la respuesta esté lista.";
         GuiTheme.fit(c,font,message,x+12,y+190,w-24,!failure.isEmpty()||!error.isEmpty()?GuiTheme.RED:GuiTheme.GREEN);
         super.extractRenderState(c,mx,my,delta);
     }

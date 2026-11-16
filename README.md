@@ -1,10 +1,10 @@
 # ChatGames Universal Helper
 
-Mod de cliente Fabric para resolver desafíos del chat y configurar sus respuestas mediante una interfaz privada. Versión **1.2.3**, desarrollada para **Minecraft Java 26.2**.
+Mod de cliente Fabric para resolver desafíos del chat y configurar sus respuestas mediante una interfaz privada. Versión **1.2.4**, desarrollada para **Minecraft Java 26.2**.
 
 ## Descargar
 
-[Descargar JAR 1.2.3](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.2.3/chatgames-universal-helper-1.2.3.jar) · [Ver releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases)
+[Descargar JAR 1.2.4](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.2.4/chatgames-universal-helper-1.2.4.jar) · [Ver releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases)
 
 Instala el JAR del mod en `mods`; el archivo `*-sources.jar` contiene el código fuente para desarrolladores.
 
@@ -22,12 +22,12 @@ El JAR se instala en el cliente del jugador. La GUI se dibuja localmente y sus c
 ## Instalación
 
 1. Cierra Minecraft e instala Fabric y Fabric API para 26.2.
-2. Coloca `chatgames-universal-helper-1.2.3.jar` en `mods`.
+2. Coloca `chatgames-universal-helper-1.2.4.jar` en `mods`.
 3. Retira el JAR anterior del helper y deja una sola versión.
 4. Conserva `config/chatgames-universal-helper/` para mantener tus preferencias y respuestas aprendidas.
 5. Inicia Minecraft y pulsa **G** dentro del juego para abrir la interfaz, o utiliza `/cgedit gui`.
 
-Esta actualización conserva los tiempos y preferencias configurados en 1.0.9, 1.1.0, 1.2.0, 1.2.1 y 1.2.2. Una configuración más antigua recibe la migración previa a 0–1 segundo una sola vez. No se reactivan juegos que hayas pausado.
+Esta actualización conserva los tiempos y preferencias configurados en 1.0.9, 1.1.0, 1.2.0, 1.2.1, 1.2.2 y 1.2.3. Una configuración más antigua recibe la migración previa a 0–1 segundo una sola vez. No se reactivan juegos que hayas pausado.
 
 ### Base de respuestas actualizada
 
@@ -62,7 +62,11 @@ Para configurar el ejemplo: pulsa **G**, elige la tarjeta del minijuego, pulsa *
 
 **Guardar cambios** valida y escribe el ajuste; se conserva al reiniciar. **Cancelar** o **Escape** vuelve sin guardar el intervalo que estabas editando. El mínimo no puede superar al máximo. Si el guardado del intervalo falla, el valor anterior se conserva en memoria.
 
-Los nuevos tiempos se aplican a las próximas respuestas. Una respuesta ya programada conserva su intervalo. Con **0 s** el mod no añade una espera después de detectar y resolver el reto; todavía cuentan la lectura del chat, la agrupación de mensajes, el cálculo y la conexión. La GUI no pausa el servidor ni un mundo local, y el mod puede seguir respondiendo mientras está abierta.
+Los nuevos tiempos se aplican a las próximas respuestas. Una respuesta ya programada conserva su intervalo. Desde la versión 1.2.4, el tiempo se cuenta desde que el cliente **recibe el reto completo**, incluyendo el procesamiento y el cálculo local. Por ejemplo, 2.1–2.9 s elige el momento de envío dentro de ese intervalo desde la recepción. Si el cálculo ya consumió ese tiempo, el mod envía en cuanto obtiene la respuesta. Con **0 s** no añade una espera.
+
+El mod procesa el chat en vivo y utiliza el registro como respaldo sin duplicar las respuestas. **Ya no espera 350 ms de silencio ni hasta 3 segundos para agrupar mensajes.** Solo conserva las líneas de un reto cuando falta texto necesario para resolverlo; los mensajes de jugadores no lo retrasan ni se mezclan con él.
+
+La latencia de conexión, la carga del cliente y el procesamiento del servidor pueden afectar al tiempo que muestra el servidor. La IA opcional también puede tardar más que el intervalo elegido. La GUI no pausa el servidor ni un mundo local, y el mod puede seguir respondiendo mientras está abierta.
 
 ### Capturas de la interfaz
 
@@ -177,7 +181,7 @@ chmod +x gradlew
 .\gradlew.bat build
 ```
 
-El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.3.jar`. El archivo `*-sources.jar` contiene fuentes y no se instala en `mods`. `build` compila, ejecuta las pruebas JUnit y remapea el mod para Minecraft. `./gradlew runClient` inicia el cliente de desarrollo; necesita entorno gráfico y descarga los recursos del juego.
+El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.4.jar`. El archivo `*-sources.jar` contiene fuentes y no se instala en `mods`. `build` compila, ejecuta las pruebas JUnit y remapea el mod para Minecraft. `./gradlew runClient` inicia el cliente de desarrollo; necesita entorno gráfico y descarga los recursos del juego.
 
 ## Publicar en GitHub
 
@@ -185,7 +189,7 @@ El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.3.jar`
 2. Sube el **contenido de la carpeta del proyecto**: `src/`, `gradle/`, `gradlew`, `gradlew.bat`, archivos Gradle, `README.md`, `LICENSE`, `WORDLIST_NOTICE.md`, `docs/`, `.gitignore` y `.github/`.
 3. No subas `build/`, `.gradle/`, `run/`, tus logs ni configuraciones personales. `.gitignore` ya los excluye.
 4. El workflow de `.github/workflows/build.yml` usa Java 25, compila y ejecuta pruebas cuando se hace push o se abre un pull request.
-5. Crea una Release con etiqueta `v1.2.3` y adjunta el JAR instalable como archivo de descarga.
+5. Crea una Release con etiqueta `v1.2.4` y adjunta el JAR instalable como archivo de descarga.
 
 El proyecto no contiene tokens ni claves de API. La IA opcional toma la clave de una variable de entorno configurada por el usuario.
 
@@ -204,6 +208,10 @@ El proyecto no contiene tokens ni claves de API. La IA opcional toma la clave de
 
 El código del mod se distribuye bajo MIT; consulta [LICENSE](LICENSE). Los diccionarios ampliados son contenido de terceros bajo **CC BY-SA 4.0** y tienen su atribución en [WORDLIST_NOTICE.md](WORDLIST_NOTICE.md). [ANALISIS_LOGS_ES.md](ANALISIS_LOGS_ES.md) conserva el análisis histórico de los retos incorporados en 1.0.7.
 
+
+## Verificación de 1.2.4
+
+Compilación con `./gradlew --offline build` y **75 pruebas JUnit aprobadas**. Las pruebas nuevas comprueban la detección inmediata desde el chat y desde el registro sin forzar el vaciado de mensajes, el plazo de 2.3 segundos del anagrama `aotP → Pato`, el tiempo de cola incluido en el intervalo, las preguntas partidas en español e inglés, las ecuaciones y la deduplicación de las 328 rondas de octubre. El cambio no se probó en el servidor remoto de Minecraft.
 
 ## Verificación de 1.2.3
 

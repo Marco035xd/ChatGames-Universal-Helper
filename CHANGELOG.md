@@ -1,5 +1,13 @@
 # Cambios
 
+## 1.2.4
+
+- Eliminada la espera de 350 ms de silencio o hasta 3 segundos para agrupar el chat: los retos completos se procesan al llegar.
+- Lectura directa de los retos desde el chat en vivo; el archivo de registro queda como respaldo con deduplicación.
+- El intervalo de cada juego se cuenta desde la recepción del reto completo e incluye el tiempo de cola y cálculo local. Si ese tiempo ya transcurrió, se envía en cuanto la respuesta está lista.
+- Las preguntas partidas y las ecuaciones conservan sus líneas hasta disponer del texto necesario, sin temporizador de espera después de completarlas.
+- Los mensajes de jugadores no se añaden a los retos. Se mantienen los controles de pausa y cancelación y los ajustes guardados.
+
 ## 1.2.3
 
 - Botones −0.1 y +0.1 segundos para ajustar el tiempo fijo o los límites mínimo y máximo de cada minijuego.

@@ -49,34 +49,36 @@ public final class GameManager implements AutoCloseable {
     public GameSession current() { return current; }
     public int cacheSize() { WordSolver loaded=words.getNow(null); return (loaded==null?0:loaded.cacheSize())+trivia.cacheSize(); }
     public void onLog(String line) {
+        long receivedAt=System.nanoTime();
         long epoch=automationEpoch.get();
         if (!config.get().enabled) return;
-        queue.execute(() -> {if(epoch==automationEpoch.get())accept(line);});
+        queue.execute(() -> {if(epoch==automationEpoch.get())accept(line,receivedAt);});
     }
     public void onRich(Component text) {
+        long receivedAt=System.nanoTime();
         long epoch=automationEpoch.get();
         if (!config.get().enabled) return;
         queue.execute(() -> {
         if (!config.get().enabled || epoch!=automationEpoch.get()) return;
         String line=text.getString();
         // Both input sources must close the same session before inspecting rich payloads.
-        if (line.startsWith("[CGH]")) return;
-        if (GameDetector.winner(line) || GameDetector.capitalizationHint(line)) { accept(line); return; }
-        if (GameDetector.administrative(line)) return;
+        if (line.startsWith("[CGH]") || GameDetector.playerChat(line)) return;
+        if (GameDetector.winner(line) || GameDetector.capitalizationHint(line) || GameDetector.administrative(line)) { accept(line,receivedAt); return; }
         List<ComponentInspector.Rich> rich=ComponentInspector.inspect(text);
-        if (rich.isEmpty()) return;
         boolean click=line.toLowerCase(Locale.ROOT).matches("(?s).*(?:click|haz clic|pulsa).*"), hover=line.toLowerCase(Locale.ROOT).matches("(?s).*(?:hover|pasa el cursor|escribe|write|type).*" );
         if (click && config.get().game("clickable")) {
             for (var r:rich) if (!r.command().isEmpty()) {
-                if (!openRich(GameType.CLICKABLE,line,r.command(),epoch)) return;
+                if (!openRich(GameType.CLICKABLE,line,r.command(),epoch,receivedAt)) return;
                 GameSession s=current;
                 schedule(s, () -> sender.clickCommand(r.command()));
                 return;
             }
         }
         if (hover && config.get().game("hoverable")) {
-            for (var r:rich) if (!r.hover().isBlank()) {if (openRich(GameType.HOVERABLE,line,r.hover(),epoch)) schedule(current,()->sender.send(r.hover())); return;}
+            for (var r:rich) if (!r.hover().isBlank()) {if (openRich(GameType.HOVERABLE,line,r.hover(),epoch,receivedAt)) schedule(current,()->sender.send(r.hover())); return;}
         }
+        // Read ordinary challenges directly from live chat; logs remain a deduplicated fallback.
+        accept(line,receivedAt);
     }); }
     /** Commands invalidate old work immediately, including callbacks already on the client thread. */
     public void setEnabled(boolean enabled) {
@@ -112,19 +114,25 @@ public final class GameManager implements AutoCloseable {
         return config.get().enabled && config.get().game(s.type.name())
             && s.automationEpoch==automationEpoch.get() && s.gameEpoch==gameEpochs.getOrDefault(s.type,0L);
     }
-    private boolean openRich(GameType t,String line,String value,long epoch) {
+    private boolean openRich(GameType t,String line,String value,long epoch,long receivedAt) {
         String key=serverKey+"|rich|"+t+"|"+line+"|"+value;
         if (seen.putIfAbsent(key,System.currentTimeMillis()) != null) return false;
         synchronized(responseLock) {
             if(epoch!=automationEpoch.get() || !config.get().enabled || !config.get().game(t.name()))return false;
             cancel(); completedSession=null; current=new GameSession(); current.type=t; current.question=line; current.answer=value; current.source="COMPONENT"; current.confidence=DetectionConfidence.HIGH; current.status=GameState.WAITING; last=current;
             tagSession(current,epoch);
+            current.receivedAtNanos=receivedAt;current.responseDelayMs=delay(t);
         }
         debug("Detected "+t+" / "+value);
         return true;
     }
-    private void accept(String line) {
+    private void accept(String message,long receivedAt) {
+        for(String line:message.split("\\R",-1))acceptLine(line,receivedAt);
+    }
+    private void acceptLine(String line,long receivedAt) {
         if (!config.get().enabled) return;
+        if (line.startsWith("[CGH]") || GameDetector.playerChat(line))return;
+        if(buffer!=null && buffer.expired(System.currentTimeMillis()))buffer=null;
         if (GameDetector.administrative(line)) {
             cancel();buffer=null;completedSession=null;seen.clear();sentAnswers.clear();return;
         }
@@ -156,20 +164,22 @@ public final class GameManager implements AutoCloseable {
             } return;
         }
         if (GameDetector.banner(line)) {
-            if (buffer!=null && buffer.size()>1) flushNow();
             if (buffer==null) { buffer=new ChallengeBuffer();bufferEpoch=automationEpoch.get(); debug("Session opened"); }
-            buffer.add(line); return;
+            buffer.add(line,receivedAt);flushIfComplete();return;
         }
         boolean context=buffer!=null;
-        if (context) { buffer.add(line); return; }
-        if (GameDetector.detect(line,false).isPresent()) { buffer=new ChallengeBuffer();bufferEpoch=automationEpoch.get(); buffer.add(line); }
+        if (context) { buffer.add(line,receivedAt);flushIfComplete();return; }
+        if (GameDetector.detect(line,false).isPresent()) { buffer=new ChallengeBuffer();bufferEpoch=automationEpoch.get(); buffer.add(line,receivedAt);flushIfComplete(); }
     }
-    private void flush() { if (buffer!=null && buffer.ready(System.currentTimeMillis())) flushNow(); seen.entrySet().removeIf(e -> System.currentTimeMillis()-e.getValue()>60000); sentAnswers.entrySet().removeIf(e -> System.currentTimeMillis()-e.getValue()>30000); }
+    private void flushIfComplete() {
+        if(buffer!=null && GameDetector.detectComplete(buffer.text(),buffer.size()>1 || GameDetector.banner(buffer.text())).isPresent())flushNow();
+    }
+    private void flush() { if (buffer!=null && buffer.expired(System.currentTimeMillis()))buffer=null; seen.entrySet().removeIf(e -> System.currentTimeMillis()-e.getValue()>60000); sentAnswers.entrySet().removeIf(e -> System.currentTimeMillis()-e.getValue()>30000); }
     private void flushNow() {
         ChallengeBuffer b=buffer; buffer=null;
         long epoch=bufferEpoch;
         if (b==null || !config.get().enabled || epoch!=automationEpoch.get()) return;
-        Optional<GameDetector.Detection> d=GameDetector.detect(b.text(), b.size()>1 || GameDetector.banner(b.text()));
+        Optional<GameDetector.Detection> d=GameDetector.detectComplete(b.text(), b.size()>1 || GameDetector.banner(b.text()));
         if (d.isEmpty()) { debug("No confident challenge in: "+b.text()); return; }
         GameDetector.Detection detected=d.get();
         if (detected.confidence()==DetectionConfidence.LOW || !config.get().game(detected.type().name())) {
@@ -181,6 +191,7 @@ public final class GameManager implements AutoCloseable {
         cancel();completedSession=null;
         GameSession s=new GameSession(); s.type=detected.type(); s.question=detected.question(); s.normalizedQuestion=key; s.confidence=detected.confidence(); s.status=GameState.SOLVING; current=last=s;
         tagSession(s,epoch);s.wordContext=GameDetector.wordContext(b.text());
+        s.receivedAtNanos=b.receivedAtNanos();s.responseDelayMs=delay(s.type);
         debug("Detected "+s.type+" / "+s.question);
         if (EnumSet.of(GameType.HUNT,GameType.MINE,GameType.PLACE,GameType.FISH,GameType.EAT,GameType.CRAFT,GameType.FURNACE).contains(s.type)) {s.status=GameState.DETECTED; output.accept("Objetivo "+s.type+": "+s.question); return;}
         if (s.type==GameType.GUESS_THE_NUMBER) {
@@ -234,7 +245,18 @@ public final class GameManager implements AutoCloseable {
         }
     }
     private long delay(GameType type) {return config.get().delayFor(type.name()).sampleMillis();}
-    private void schedule(GameSession s,Callable<Boolean> send) {if(s!=null)schedule(s,send,delay(s.type));}
+    private void schedule(GameSession s,Callable<Boolean> send) {
+        if(s==null)return;
+        long ms;
+        if(s.firstSendScheduled)ms=delay(s.type);
+        else {
+            // Count solving/queue time inside the configured interval, using a monotonic clock.
+            ms=Math.max(0,s.responseDelayMs-TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-s.receivedAtNanos));
+            s.firstSendScheduled=true;
+            debug("Configured delay: "+s.responseDelayMs+"ms / Remaining: "+ms+"ms");
+        }
+        schedule(s,send,ms);
+    }
     private void schedule(GameSession s,Callable<Boolean> send,long ms) {
         if (s==null || s!=current || !canRespond(s)) return;
         if (pending != null) pending.cancel(false);
