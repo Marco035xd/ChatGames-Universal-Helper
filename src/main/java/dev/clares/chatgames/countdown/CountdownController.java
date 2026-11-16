@@ -9,7 +9,7 @@ public final class CountdownController {
     private final CountdownClock clock;
     private boolean connected;
     public CountdownController(ConfigManager settings) {
-        this.settings=settings;clock=new CountdownClock(()->System.nanoTime()/1000000,()->settings.get().countdown.intervalMinutes);
+        this.settings=settings;clock=new CountdownClock(()->System.nanoTime()/1000000,()->settings.get().countdown.intervalMinutes,()->settings.get().countdown.intervalSeconds);
     }
     public CountdownClock clock(){return clock;}
     public synchronized void joined(){clock.reset();connected=true;}

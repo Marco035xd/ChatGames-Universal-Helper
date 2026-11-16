@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public final class ClientCommands {
     private final ConfigManager settings; private final GameManager games; private final LogWatcher watcher; private final Consumer<String> say; private final Consumer<Component> styled; private final Runnable openGui;private final CountdownClock countdown;
     public ClientCommands(ConfigManager settings,GameManager games,LogWatcher watcher,Consumer<String> say,Consumer<Component> styled) {this(settings,games,watcher,say,styled,()->{});}
-    public ClientCommands(ConfigManager settings,GameManager games,LogWatcher watcher,Consumer<String> say,Consumer<Component> styled,Runnable openGui) {this(settings,games,watcher,say,styled,openGui,new CountdownClock(()->System.nanoTime()/1000000,()->settings.get().countdown.intervalMinutes));}
+    public ClientCommands(ConfigManager settings,GameManager games,LogWatcher watcher,Consumer<String> say,Consumer<Component> styled,Runnable openGui) {this(settings,games,watcher,say,styled,openGui,new CountdownClock(()->System.nanoTime()/1000000,()->settings.get().countdown.intervalMinutes,()->settings.get().countdown.intervalSeconds));}
     public ClientCommands(ConfigManager settings,GameManager games,LogWatcher watcher,Consumer<String> say,Consumer<Component> styled,Runnable openGui,CountdownClock countdown) {this.countdown=countdown;this.settings=settings;this.games=games;this.watcher=watcher;this.say=say;this.styled=styled;this.openGui=openGui;}
     public void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(CommandTree.build(this::run)));

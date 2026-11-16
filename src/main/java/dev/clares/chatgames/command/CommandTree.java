@@ -59,8 +59,15 @@ public final class CommandTree {
         LiteralArgumentBuilder<S> countdown=LiteralArgumentBuilder.<S>literal("countdown").executes(ctx->run.applyAsInt("countdown status"));
         for(String value:new String[]{"on","off","status"})countdown.then(LiteralArgumentBuilder.<S>literal(value).executes(ctx->run.applyAsInt("countdown "+value)));
         countdown.then(toggle("sound",command->run.applyAsInt("countdown "+command)));
-        countdown.then(LiteralArgumentBuilder.<S>literal("interval").then(RequiredArgumentBuilder.<S,Integer>argument("minutes",IntegerArgumentType.integer(1,1440))
-            .suggests((ctx,b)->{b.suggest(25);b.suggest(30);return b.buildFuture();}).executes(ctx->run.applyAsInt("countdown interval "+IntegerArgumentType.getInteger(ctx,"minutes")))));
+        countdown.then(LiteralArgumentBuilder.<S>literal("interval").then(RequiredArgumentBuilder.<S,Integer>argument("minutes",IntegerArgumentType.integer(0,1440))
+            .suggests((ctx,b)->{b.suggest(8);b.suggest(25);b.suggest(30);return b.buildFuture();})
+            .executes(ctx->run.applyAsInt("countdown interval "+IntegerArgumentType.getInteger(ctx,"minutes")))
+            .then(RequiredArgumentBuilder.<S,Integer>argument("seconds",IntegerArgumentType.integer(0,59))
+                .suggests((ctx,b)->{b.suggest(0);b.suggest(1);return b.buildFuture();})
+                .executes(ctx->run.applyAsInt("countdown interval "+IntegerArgumentType.getInteger(ctx,"minutes")+" "+IntegerArgumentType.getInteger(ctx,"seconds"))))));
+        LiteralArgumentBuilder<S> view=LiteralArgumentBuilder.literal("view");
+        for(String name:new String[]{"full","last10"})view.then(LiteralArgumentBuilder.<S>literal(name).executes(ctx->run.applyAsInt("countdown view "+name)));
+        countdown.then(view);
         countdown.then(LiteralArgumentBuilder.<S>literal("sync").then(RequiredArgumentBuilder.<S,Integer>argument("seconds",IntegerArgumentType.integer(1,86400))
             .suggests((ctx,b)->{b.suggest(1500);b.suggest(60);return b.buildFuture();}).executes(ctx->run.applyAsInt("countdown sync "+IntegerArgumentType.getInteger(ctx,"seconds")))));
         root.then(countdown);

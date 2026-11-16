@@ -16,7 +16,7 @@ public final class HelpPages {
             new Entry("/cgedit stats on/off", "Muestra u oculta los avisos locales. Para apagar las respuestas usa /cgedit off.")
         )),
         new Page("Tiempos por juego", List.of(
-            new Entry("/cgedit countdown · /cgedit countdown interval 25", "Consulta el contador de 10 segundos o cambia el intervalo entre juegos en minutos. Ajustes también en la GUI."),
+            new Entry("/cgedit countdown · /cgedit countdown interval 8 1", "Contador superior en minutos:segundos. Actívalo con countdown on; cambia su vista con countdown view full o last10. Ajustes también en la GUI."),
             new Entry("/cgedit settime 0s", "Sin espera añadida. Acepta decimales: 2.1s o 2,1s, y milisegundos: 500ms."),
             new Entry("/cgedit settime random 0s 1s", "Responde con una espera de 0 a 1 segundo; intervalo inicial de esta versión."),
             new Entry("/cgedit settime math random 2.1s 2.9s", "Configura MATH entre 2.1 y 2.9 segundos. Puedes sustituir math por otro tipo y usar coma decimal."),

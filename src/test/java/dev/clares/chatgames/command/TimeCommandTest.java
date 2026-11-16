@@ -18,7 +18,7 @@ class TimeCommandTest {
         ConfigManager config=new ConfigManager(temp);ModConfig c=config.get();
         assertFalse(c.enabled);assertTrue(c.stats);assertFalse(c.game("trivia"));
         for(String mode:c.games.keySet())check(c.delayFor(mode),"random",0,1000);
-        assertEquals(9,c.configRevision);assertTrue(c.gameDelays.isEmpty());
+        assertEquals(10,c.configRevision);assertTrue(c.gameDelays.isEmpty());
         assertTrue(Files.readString(config.dir().resolve("trivia-cache.json")).contains("Mi respuesta del servidor"),"A timing-only update must keep learned answers");
         for(int i=0;i<10000;i++) {
             long math=c.delayFor("math").sampleMillis(),variable=c.delayFor("variable").sampleMillis();

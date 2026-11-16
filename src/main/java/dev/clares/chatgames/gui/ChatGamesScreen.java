@@ -55,7 +55,7 @@ public final class ChatGamesScreen extends Screen {
         button("HUD: "+(config.hud?"sí":"no"),x+w/2+4,fy,w/2-4,18,()->{config.hud=!config.hud;persistAndRefresh("HUD actualizado.");},"Muestra u oculta el pequeño panel de estado durante un reto.");
         Button previous=button("‹",x,fy+22,26,18,()->{page--;rebuildWidgets();},"Página anterior");previous.active=page>0;
         Button next=button("›",x+30,fy+22,26,18,()->{page++;rebuildWidgets();},"Página siguiente");next.active=page<layout.pages(GameCatalog.ENTRIES.size())-1;
-        button("Contador",x+w-170,fy+22,92,18,()->minecraft.gui.setScreen(new CountdownSettingsScreen(this,settings,countdown)),"Aviso de 10 segundos, intervalo entre juegos, notas y volumen.");
+        button("Contador",x+w-170,fy+22,92,18,()->minecraft.gui.setScreen(new CountdownSettingsScreen(this,settings,countdown)),"Tiempo restante en minutos:segundos arriba de la pantalla, intervalo entre juegos, notas y volumen.");
         button("Cerrar",x+w-70,fy+22,70,18,this::onClose,"Los cambios guardados se conservan al reiniciar.");
     }
     private void persistAndRefresh(String text){try{settings.save();notice=text;}catch(RuntimeException e){notice="No se pudo guardar. Revisa el archivo de configuración.";}rebuildWidgets();}
@@ -66,6 +66,7 @@ public final class ChatGamesScreen extends Screen {
         return addRenderableWidget(Button.builder(text,b->{try{action.run();}catch(RuntimeException e){notice="No se pudo guardar el ajuste. Revisa la configuración.";rebuildWidgets();}}).bounds(x,y,w,h).tooltip(Tooltip.create(Component.literal(lore))).build());
     }
     public void saved(String title){notice=title+": tiempo guardado. Se aplica a las próximas respuestas.";}
+    public void countdownSaved(){notice="Contador guardado. Se aplica al panel y al próximo aviso.";}
     @Override public void extractRenderState(GuiGraphicsExtractor c,int mx,int my,float delta) {
         c.fill(0,0,width,height,0xBF080E19);GuiTheme.panel(c,layout.x(),layout.y(),layout.width(),layout.height());
         c.text(font,"CHATGAMES",layout.x()+12,layout.y()+10,GuiTheme.GOLD);

@@ -21,10 +21,20 @@ public final class ConfigManager {
         dir = gameDir.resolve("config/chatgames-universal-helper"); path = dir.resolve("config.json");
         try {
             Files.createDirectories(dir);
-            config = Files.exists(path) ? GSON.fromJson(Files.readString(path), ModConfig.class) : new ModConfig();
+            String savedConfig=Files.exists(path)?Files.readString(path):null;
+            config = savedConfig!=null ? GSON.fromJson(savedConfig, ModConfig.class) : new ModConfig();
             if (config == null || config.delay == null || config.games == null || config.ai == null) config = new ModConfig();
             if(config.countdown==null)config.countdown=new ModConfig.Countdown();
-            if(config.countdown.intervalMinutes<1||config.countdown.intervalMinutes>1440)config.countdown.intervalMinutes=25;
+            if(savedConfig!=null) {
+                var saved=com.google.gson.JsonParser.parseString(savedConfig);
+                if(saved.isJsonObject()) {
+                    var counter=saved.getAsJsonObject().get("countdown");
+                    if(counter!=null&&counter.isJsonObject()&&!counter.getAsJsonObject().has("intervalSeconds"))config.countdown.intervalSeconds=0;
+                }
+            }
+            if(config.countdown.intervalMinutes<0||config.countdown.intervalMinutes>1440)config.countdown.intervalMinutes=8;
+            if(config.countdown.intervalSeconds<0||config.countdown.intervalSeconds>59)config.countdown.intervalSeconds=1;
+            if(config.countdown.totalSeconds()<1||config.countdown.totalSeconds()>86400){config.countdown.intervalMinutes=8;config.countdown.intervalSeconds=1;}
             if(!Float.isFinite(config.countdown.volume))config.countdown.volume=0.6f;
             config.countdown.volume=Math.max(0,Math.min(1,config.countdown.volume));
             if(config.gameDelays==null)config.gameDelays=new LinkedHashMap<>();
@@ -52,6 +62,13 @@ public final class ConfigManager {
                 config.delay=ModConfig.Delay.random(0,1000);
                 config.gameDelays.clear();
                 config.configRevision=9;
+            }
+            if(config.configRevision<10) {
+                // Replace the old default; explicit non-default intervals and other settings stay intact.
+                if(config.countdown.intervalMinutes==25 && config.countdown.intervalSeconds==0) {
+                    config.countdown.intervalMinutes=8;config.countdown.intervalSeconds=1;
+                }
+                config.configRevision=10;
             }
             save();
         } catch (Exception e) { throw new IllegalStateException("Cannot load ChatGames configuration", e); }

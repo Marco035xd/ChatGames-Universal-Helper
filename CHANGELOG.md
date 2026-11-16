@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.2.5
+
+- Panel superior permanente con «Nuevo minijuego en MM:SS», activable desde Contador y con alternativa de mostrar solo los últimos 10 segundos.
+- El panel distingue el reto en curso y la espera posterior al resultado. La respuesta no reinicia un intervalo completo: se descuenta lo ya transcurrido desde el inicio.
+- Intervalo configurable por minutos y segundos; valor inicial 08:01 basado en 176 intervalos medidos en los registros de noviembre (entre 08:00 y 08:03).
+- El antiguo intervalo predeterminado de 25 minutos se migra a 08:01; se conservan los demás intervalos personalizados y los controles de activación, sonido y volumen.
+- Comandos `countdown interval 8 1` y `countdown view full/last10`. Se mantienen el aviso musical final, la sincronización con retos reales y el reinicio al desconectarse.
+- Informe de horas y referencias en `ANALISIS_INTERVALOS_2026_11_ES.md`, con corpus de regresión sin conversaciones de jugadores.
+
 ## 1.2.4
 
 - Eliminada la espera de 350 ms de silencio o hasta 3 segundos para agrupar el chat: los retos completos se procesan al llegar.

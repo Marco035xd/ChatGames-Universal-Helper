@@ -1,10 +1,10 @@
 # ChatGames Universal Helper
 
-Mod de cliente Fabric para resolver desafíos del chat y configurar sus respuestas mediante una interfaz privada. Versión **1.2.4**, desarrollada para **Minecraft Java 26.2**.
+Mod de cliente Fabric para resolver desafíos del chat y configurar sus respuestas mediante una interfaz privada. Versión **1.2.5**, desarrollada para **Minecraft Java 26.2**.
 
 ## Descargar
 
-[Descargar JAR 1.2.4](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.2.4/chatgames-universal-helper-1.2.4.jar) · [Ver releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases)
+[Descargar JAR 1.2.5](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.2.5/chatgames-universal-helper-1.2.5.jar) · [Ver releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases)
 
 Instala el JAR del mod en `mods`; el archivo `*-sources.jar` contiene el código fuente para desarrolladores.
 
@@ -22,12 +22,12 @@ El JAR se instala en el cliente del jugador. La GUI se dibuja localmente y sus c
 ## Instalación
 
 1. Cierra Minecraft e instala Fabric y Fabric API para 26.2.
-2. Coloca `chatgames-universal-helper-1.2.4.jar` en `mods`.
+2. Coloca `chatgames-universal-helper-1.2.5.jar` en `mods`.
 3. Retira el JAR anterior del helper y deja una sola versión.
 4. Conserva `config/chatgames-universal-helper/` para mantener tus preferencias y respuestas aprendidas.
 5. Inicia Minecraft y pulsa **G** dentro del juego para abrir la interfaz, o utiliza `/cgedit gui`.
 
-Esta actualización conserva los tiempos y preferencias configurados en 1.0.9, 1.1.0, 1.2.0, 1.2.1, 1.2.2 y 1.2.3. Una configuración más antigua recibe la migración previa a 0–1 segundo una sola vez. No se reactivan juegos que hayas pausado.
+Esta actualización conserva los tiempos y preferencias configurados en 1.0.9, 1.1.0, 1.2.0, 1.2.1, 1.2.2, 1.2.3 y 1.2.4. Una configuración más antigua recibe la migración previa a 0–1 segundo una sola vez. No se reactivan juegos que hayas pausado.
 
 ### Base de respuestas actualizada
 
@@ -48,7 +48,7 @@ Puedes cambiar la tecla en **Opciones → Controles → Asignación de teclas �
 - **Tiempo general:** edita el intervalo común de los modos que lo heredan.
 - **Avisos:** muestra u oculta el mensaje local «Respuesta enviada». Este control no apaga las respuestas.
 - **HUD:** muestra u oculta el panel de estado durante un desafío.
-- **Contador:** abre el aviso del próximo juego, su intervalo y su sonido.
+- **Contador:** configura la cuenta superior en minutos:segundos, su visibilidad, el intervalo y el sonido final.
 - **Flechas:** cambian de página; el número de tarjetas se adapta a la escala de GUI.
 
 En el editor puedes elegir **tiempo fijo**, **intervalo aleatorio** o **usar tiempo general**. Cada minijuego admite su propio tiempo decimal entre 0 y 60 segundos, escrito con punto o coma (`2.1` o `2,1`); también acepta unidades como `500ms`.
@@ -78,32 +78,43 @@ La latencia de conexión, la carga del cliente y el procesamiento del servidor p
 
 ## Contador del próximo minijuego
 
-La pantalla muestra **«Nuevo minijuego en»** y los números **10, 9, 8… 1** antes del siguiente evento estimado. Suena una nota de arpa por número, solo en tu cliente. Usa sonidos de Minecraft: no necesita paquetes de recursos.
+El panel superior muestra **«Nuevo minijuego en 07:58»**, con minutos y segundos durante toda la espera. Mientras el reto está activo, indica **«Minijuego en curso»**. Al responder alguien o terminar la ronda, muestra el tiempo restante hasta el siguiente inicio estimado.
 
-Abre `/cgedit gui` y pulsa **Contador** para cambiar:
+El intervalo se cuenta **entre inicios de minijuegos**, no desde el ganador. Por ejemplo, con un intervalo de 08:01 y una respuesta a los 3 segundos, al terminar quedan 07:58. Cada inicio real vuelve a sincronizar la cuenta.
 
-- Activación del aviso.
-- Notas activadas o silenciadas.
-- Intervalo entre juegos, en minutos (1–1440).
-- Volumen de las notas, de 0 a 100%.
+Se revisaron **191 rondas de noviembre** y **176 pares consecutivos**: el intervalo observado fue de **08:00 a 08:03**, con una media de 480.60 segundos. El valor inicial es **08:01**. El informe [ANALISIS_INTERVALOS_2026_11_ES.md](ANALISIS_INTERVALOS_2026_11_ES.md) incluye ejemplos de horas, diferencias y referencias a las líneas originales.
 
-**Probar aviso** reproduce una vista previa de diez segundos y vuelve a la pantalla de ajustes. No guarda cambios ni altera el horario del próximo evento. **Guardar cambios** conserva los ajustes al reiniciar; **Cancelar** los descarta.
+Pulsa **G → Contador** para cambiar:
 
-El intervalo inicial es **25 minutos**, tomado de la configuración anterior del servidor. Cámbialo si tu servidor usa otro. Al entrar o cambiar de conexión, el mod espera a observar un reto real antes de calcular el siguiente inicio. Reconoce anuncios en español e inglés, preguntas bajo la cabecera de ChatGames y avisos explícitos del próximo evento.
+- **Contador: activado/apagado:** controla el panel y los avisos, independientemente de las respuestas automáticas.
+- **Vista: permanente / solo últimos 10 segundos:** elige entre la cuenta completa arriba o únicamente el aviso final.
+- **Minutos y segundos:** intervalo entre inicios; por ejemplo, minutos `8` y segundos `1`.
+- **Notas:** activa o silencia una nota privada por número durante los últimos 10 segundos.
+- **Volumen:** de 0 a 100%.
 
-El contador es una **estimación del cliente**: un inicio manual, cambios de horario, falta de jugadores o retrasos del servidor pueden alterar la próxima ronda. No muestra «ya comenzó» cuando la estimación vence; espera a un nuevo reto. Los anuncios explícitos del servidor y la sincronización manual pueden ajustar la cuenta.
+**Guardar cambios** conserva los ajustes al reiniciar. **Cancelar** los descarta. **Probar 10 s** muestra una vista previa independiente: no guarda cambios ni modifica el horario del contador real. El sonido usa notas de Minecraft y no necesita paquetes de recursos.
+
+La versión 1.2.5 cambia el antiguo intervalo predeterminado de 25 minutos a 08:01. Conserva los intervalos distintos de ese antiguo valor, el estado activado/apagado, las notas, el volumen y los tiempos de respuesta de cada juego.
+
+Al entrar o cambiar de conexión, el mod espera observar un reto real antes de calcular la siguiente ronda. Se reconocen instrucciones, cabeceras de ChatGames/Minijuego y anuncios explícitos en español e inglés. El panel muestra que está esperando sincronización y no presenta una hora inventada.
+
+El contador es una **estimación del cliente**: un evento manual, cambios de horario, carga del servidor o latencia pueden alterar el siguiente inicio. Al vencer la cuenta, espera el próximo anuncio real. No inventa rondas sucesivas. La referencia se borra al desconectarse.
 
 ```text
 /cgedit countdown
-/cgedit countdown interval 25
 /cgedit countdown on
 /cgedit countdown off
+/cgedit countdown view full
+/cgedit countdown view last10
+/cgedit countdown interval 8 1
 /cgedit countdown sound on
 /cgedit countdown sound off
 /cgedit countdown sync 60
 ```
 
-`sync 60` indica que conoces que faltan 60 segundos para el próximo juego; no cambia el intervalo entre rondas. Este ajuste de fase se borra al desconectarte. `/cgedit off` pausa las **respuestas automáticas**; el contador tiene su propio interruptor.
+`interval 8 1` establece 8 minutos y 1 segundo; la forma anterior `interval 25` sigue significando 25 minutos exactos. `sync 60` indica que conoces que faltan 60 segundos; no cambia el intervalo entre rondas. `/cgedit off` pausa las **respuestas automáticas**; el contador tiene su propio interruptor.
+
+Las capturas siguientes corresponden a la interfaz anterior del aviso final:
 
 ![Ajustes del contador](docs/images/countdown-settings.png)
 
@@ -181,7 +192,7 @@ chmod +x gradlew
 .\gradlew.bat build
 ```
 
-El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.4.jar`. El archivo `*-sources.jar` contiene fuentes y no se instala en `mods`. `build` compila, ejecuta las pruebas JUnit y remapea el mod para Minecraft. `./gradlew runClient` inicia el cliente de desarrollo; necesita entorno gráfico y descarga los recursos del juego.
+El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.5.jar`. El archivo `*-sources.jar` contiene fuentes y no se instala en `mods`. `build` compila, ejecuta las pruebas JUnit y remapea el mod para Minecraft. `./gradlew runClient` inicia el cliente de desarrollo; necesita entorno gráfico y descarga los recursos del juego.
 
 ## Publicar en GitHub
 
@@ -189,7 +200,7 @@ El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.4.jar`
 2. Sube el **contenido de la carpeta del proyecto**: `src/`, `gradle/`, `gradlew`, `gradlew.bat`, archivos Gradle, `README.md`, `LICENSE`, `WORDLIST_NOTICE.md`, `docs/`, `.gitignore` y `.github/`.
 3. No subas `build/`, `.gradle/`, `run/`, tus logs ni configuraciones personales. `.gitignore` ya los excluye.
 4. El workflow de `.github/workflows/build.yml` usa Java 25, compila y ejecuta pruebas cuando se hace push o se abre un pull request.
-5. Crea una Release con etiqueta `v1.2.4` y adjunta el JAR instalable como archivo de descarga.
+5. Crea una Release con etiqueta `v1.2.5` y adjunta el JAR instalable como archivo de descarga.
 
 El proyecto no contiene tokens ni claves de API. La IA opcional toma la clave de una variable de entorno configurada por el usuario.
 
@@ -208,6 +219,10 @@ El proyecto no contiene tokens ni claves de API. La IA opcional toma la clave de
 
 El código del mod se distribuye bajo MIT; consulta [LICENSE](LICENSE). Los diccionarios ampliados son contenido de terceros bajo **CC BY-SA 4.0** y tienen su atribución en [WORDLIST_NOTICE.md](WORDLIST_NOTICE.md). [ANALISIS_LOGS_ES.md](ANALISIS_LOGS_ES.md) conserva el análisis histórico de los retos incorporados en 1.0.7.
 
+
+## Verificación de 1.2.5
+
+Compilación con `./gradlew --offline build` y **82 pruebas JUnit aprobadas**, sin fallos, errores ni pruebas omitidas. Las pruebas nuevas comprueban el texto visible en minutos:segundos, el tiempo descontado tras el resultado, la sincronización de fuentes duplicadas, las 176 mediciones de noviembre, los controles y los ajustes guardados. La apariencia del panel no se probó manualmente en Minecraft ni se verificó el horario futuro del servidor remoto.
 
 ## Verificación de 1.2.4
 

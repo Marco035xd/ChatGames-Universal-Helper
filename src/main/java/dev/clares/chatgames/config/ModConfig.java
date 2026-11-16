@@ -46,8 +46,10 @@ public final class ModConfig {
     }
     public static final class Countdown {
         public boolean enabled=true, sound=true;
-        public volatile int intervalMinutes=25;
+        public boolean fullTime=true;
+        public volatile int intervalMinutes=8, intervalSeconds=1;
         public float volume=0.6f;
+        public int totalSeconds(){return intervalMinutes*60+intervalSeconds;}
     }
     public static final class Ai { public boolean enabled = false; public String provider = "disabled"; public String endpoint = ""; public String model = ""; public String apiKeyEnv = "CGH_API_KEY"; public int timeoutMs = 4000; }
 }
