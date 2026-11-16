@@ -41,7 +41,7 @@ public final class CountdownSettingsScreen extends Screen {
         refresh();
     }
     private Button button(String label,int x,int y,int width,int height,Runnable action,String lore) {
-        return addRenderableWidget(Button.builder(Component.literal(label),b->action.run()).bounds(x,y,width,height).tooltip(Tooltip.create(Component.literal(lore))).build());
+        return addRenderableWidget(GuiTheme.button(label,x,y,width,height,action,lore));
     }
     private void refresh() {
         if(enabled==null||sound==null)return;

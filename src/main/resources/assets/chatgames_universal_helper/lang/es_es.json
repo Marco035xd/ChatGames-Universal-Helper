@@ -1,4 +1,5 @@
 {
   "key.category.chatgames_universal_helper.main": "ChatGames",
-  "key.chatgames_universal_helper.open_gui": "Abrir menú de ChatGames"
+  "key.chatgames_universal_helper.open_gui": "Abrir menú de ChatGames",
+  "key.chatgames_universal_helper.pause": "Pausar / reanudar respuestas"
 }

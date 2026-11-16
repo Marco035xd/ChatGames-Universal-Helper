@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 
-final class GuiTheme {
+public final class GuiTheme {
     static final int TEXT=0xFFE8F1F5,MUTED=0xFF9DAFBC,GOLD=0xFFFFCF70,GREEN=0xFF8BE0AD,RED=0xFFFF9999;
     static void panel(GuiGraphicsExtractor c,int x,int y,int w,int h) {
         c.fill(x-2,y-2,x+w+2,y+h+2,0xCC03080F);
@@ -17,5 +17,9 @@ final class GuiTheme {
         c.text(r,clipped,x,y,color);
     }
     static Component text(String s){return Component.literal(s);}
+    static net.minecraft.client.gui.components.Button button(String label,int x,int y,int w,int h,Runnable action,String hint) {
+        var button=new FlatButton(x,y,w,h,text(label),b->action.run());
+        button.setTooltip(net.minecraft.client.gui.components.Tooltip.create(text(hint)));return button;
+    }
     private GuiTheme(){}
 }

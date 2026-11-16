@@ -20,5 +20,6 @@ public final class GameCatalog {
         new Entry(GameType.CLICKABLE,"Clic en el chat","Usa el componente pulsable enviado por el minijuego.","Mantiene el comportamiento de CLICKABLE."),
         new Entry(GameType.GUESS_THE_NUMBER,"Adivinar número","Ajusta los intentos según las pistas de mayor o menor.","Cada intento usa el intervalo de este modo.")
     );
+    public static String title(GameType type){return ENTRIES.stream().filter(e->e.type()==type).map(Entry::title).findFirst().orElse(type.name());}
     private GameCatalog(){}
 }

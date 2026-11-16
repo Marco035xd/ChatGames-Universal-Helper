@@ -9,9 +9,10 @@ import java.util.function.ToIntFunction;
 /** Real Brigadier nodes provide both argument validation and Minecraft's completion menu. */
 public final class CommandTree {
     private CommandTree() { }
-    public static <S> LiteralArgumentBuilder<S> build(ToIntFunction<String> run) {
+    public static <S> LiteralArgumentBuilder<S> build(ToIntFunction<String> run) {return build(run,java.util.List::of);}
+    public static <S> LiteralArgumentBuilder<S> build(ToIntFunction<String> run,java.util.function.Supplier<java.util.List<String>> profiles) {
         LiteralArgumentBuilder<S> root=LiteralArgumentBuilder.<S>literal("cgedit").executes(ctx->run.applyAsInt("help"));
-        for (String name:new String[]{"on","off","status","testlog","last","gui","menu"})
+        for (String name:new String[]{"on","off","status","testlog","last","gui","menu","pause","resume","report"})
             root.then(LiteralArgumentBuilder.<S>literal(name).executes(ctx->run.applyAsInt(name)));
         root.then(LiteralArgumentBuilder.<S>literal("help").executes(ctx->run.applyAsInt("help"))
             .then(RequiredArgumentBuilder.<S,Integer>argument("page",IntegerArgumentType.integer(1,HelpPages.count()))
@@ -21,7 +22,7 @@ public final class CommandTree {
             .then(LiteralArgumentBuilder.<S>literal("stats").executes(ctx->run.applyAsInt("cache stats"))));
         root.then(LiteralArgumentBuilder.<S>literal("ai").executes(ctx->run.applyAsInt("ai status"))
             .then(LiteralArgumentBuilder.<S>literal("status").executes(ctx->run.applyAsInt("ai status"))));
-        for (String name:new String[]{"debug","stats"}) root.then(toggle(name,run));
+        for (String name:new String[]{"debug","stats","hud"}) root.then(toggle(name,run));
         LiteralArgumentBuilder<S> game=LiteralArgumentBuilder.literal("game"), test=LiteralArgumentBuilder.literal("test");
         for (GameType type:GameType.values()) {
             if (type==GameType.UNKNOWN) continue;
@@ -72,6 +73,20 @@ public final class CommandTree {
             .suggests((ctx,b)->{b.suggest(1500);b.suggest(60);return b.buildFuture();}).executes(ctx->run.applyAsInt("countdown sync "+IntegerArgumentType.getInteger(ctx,"seconds")))));
         root.then(countdown);
         root.then(time);
+        root.then(LiteralArgumentBuilder.<S>literal("history").executes(ctx->run.applyAsInt("history 1"))
+            .then(RequiredArgumentBuilder.<S,Integer>argument("page",IntegerArgumentType.integer(1,20))
+                .executes(ctx->run.applyAsInt("history "+IntegerArgumentType.getInteger(ctx,"page")))));
+        LiteralArgumentBuilder<S> profile=LiteralArgumentBuilder.<S>literal("profile").executes(ctx->run.applyAsInt("profile list"));
+        for(String command:new String[]{"list","undo"})profile.then(LiteralArgumentBuilder.<S>literal(command).executes(ctx->run.applyAsInt("profile "+command)));
+        for(String command:new String[]{"save","load","show","delete"}) {
+            var name=RequiredArgumentBuilder.<S,String>argument("name",StringArgumentType.word())
+                .suggests((ctx,b)->{try{for(String n:profiles.get())if(n.startsWith(b.getRemaining()))b.suggest(n);}catch(RuntimeException ignored){}return b.buildFuture();})
+                .executes(ctx->run.applyAsInt("profile "+command+" "+StringArgumentType.getString(ctx,"name")));
+            if(command.equals("delete"))name.then(LiteralArgumentBuilder.<S>literal("confirm")
+                .executes(ctx->run.applyAsInt("profile delete "+StringArgumentType.getString(ctx,"name")+" confirm")));
+            profile.then(LiteralArgumentBuilder.<S>literal(command).then(name));
+        }
+        root.then(profile);
         return root;
     }
     private static <S> RequiredArgumentBuilder<S,String> duration(String prefix,ToIntFunction<String> run) {

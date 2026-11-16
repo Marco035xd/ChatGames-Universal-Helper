@@ -14,6 +14,8 @@ import java.util.function.BooleanSupplier;
 
 public final class GameManager implements AutoCloseable {
     private final ConfigManager config;
+    private final RoundHistory history=new RoundHistory();
+    private final dev.clares.chatgames.config.ProfileStore profiles;
     private final Consumer<Runnable> clientThread;
     private final BooleanSupplier playerReady;
     private final AnswerSender sender;
@@ -41,11 +43,25 @@ public final class GameManager implements AutoCloseable {
     }
     GameManager(ConfigManager config,Consumer<String> output,Consumer<Runnable> clientThread,BooleanSupplier playerReady,AnswerSender sender) {
         this.config=config;this.output=output;this.clientThread=clientThread;this.playerReady=playerReady;this.sender=sender;
+        profiles=new dev.clares.chatgames.config.ProfileStore(config);
         words=CompletableFuture.supplyAsync(() -> new WordSolver(config.dir()),aiPool);
         trivia=new TriviaSolver(config.dir()); ai=new HttpAIProvider(config.get().ai);
         queue.scheduleAtFixedRate(this::flush, 100,100,TimeUnit.MILLISECONDS);
     }
     public GameSession last() { return last; }
+    public RoundHistory history(){return history;}
+    public dev.clares.chatgames.config.ProfileStore profiles(){return profiles;}
+    public void applyProfile(String name) {
+        if(name!=null)profiles.read(name);
+        synchronized(responseLock) {
+            automationEpoch.incrementAndGet();cancel();
+            if(name==null)profiles.undo();else profiles.load(name);
+            queue.execute(()->{if(current!=null&&current.automationEpoch!=automationEpoch.get())cancel();buffer=null;completedSession=null;seen.clear();sentAnswers.clear();});
+        }
+    }
+    public CompletableFuture<Optional<String>> preview(GameType type,String question) {
+        return CompletableFuture.supplyAsync(()->solveLocal(type,question));
+    }
     public GameSession current() { return current; }
     public int cacheSize() { WordSolver loaded=words.getNow(null); return (loaded==null?0:loaded.cacheSize())+trivia.cacheSize(); }
     public void onLog(String line) {
@@ -122,6 +138,7 @@ public final class GameManager implements AutoCloseable {
             cancel(); completedSession=null; current=new GameSession(); current.type=t; current.question=line; current.answer=value; current.source="COMPONENT"; current.confidence=DetectionConfidence.HIGH; current.status=GameState.WAITING; last=current;
             tagSession(current,epoch);
             current.receivedAtNanos=receivedAt;current.responseDelayMs=delay(t);
+            history.update(current,"Resolviendo");
         }
         debug("Detected "+t+" / "+value);
         return true;
@@ -142,7 +159,9 @@ public final class GameManager implements AutoCloseable {
             if (current!=null) {completedSession=current;completedAt=System.currentTimeMillis();}
             GameSession completed=System.currentTimeMillis()-completedAt<5000?completedSession:null;
             if (completed!=null) GameDetector.announcedAnswer(line).ifPresent(solution->remember(completed,solution));
-            debug("Winner detected");buffer=null;cancel();return;
+            debug("Winner detected");buffer=null;cancel();
+            if(completed!=null)history.finish(completed,GameDetector.announcedAnswer(line).orElse(""));
+            return;
         }
         if (GameDetector.capitalizationHint(line)) {
             GameSession s=current;
@@ -192,8 +211,9 @@ public final class GameManager implements AutoCloseable {
         GameSession s=new GameSession(); s.type=detected.type(); s.question=detected.question(); s.normalizedQuestion=key; s.confidence=detected.confidence(); s.status=GameState.SOLVING; current=last=s;
         tagSession(s,epoch);s.wordContext=GameDetector.wordContext(b.text());
         s.receivedAtNanos=b.receivedAtNanos();s.responseDelayMs=delay(s.type);
+        history.update(s,"Resolviendo");
         debug("Detected "+s.type+" / "+s.question);
-        if (EnumSet.of(GameType.HUNT,GameType.MINE,GameType.PLACE,GameType.FISH,GameType.EAT,GameType.CRAFT,GameType.FURNACE).contains(s.type)) {s.status=GameState.DETECTED; output.accept("Objetivo "+s.type+": "+s.question); return;}
+        if (EnumSet.of(GameType.HUNT,GameType.MINE,GameType.PLACE,GameType.FISH,GameType.EAT,GameType.CRAFT,GameType.FURNACE).contains(s.type)) {s.status=GameState.DETECTED;history.update(s,"Objetivo manual"); output.accept("Objetivo "+s.type+": "+s.question); return;}
         if (s.type==GameType.GUESS_THE_NUMBER) {
             String[] ends=s.question.split("-"); s.lower=Integer.parseInt(ends[0]); s.upper=Integer.parseInt(ends[1]);
             s.answer=Integer.toString(s.lower+(s.upper-s.lower)/2); s.source="LOCAL";
@@ -213,13 +233,13 @@ public final class GameManager implements AutoCloseable {
                         case FILLOUT -> WordSolver.matchesFillout(s.question,a);
                         default -> false;
                     });
-                    if (valid.isEmpty()) {s.status=GameState.FINISHED;debug("No reliable AI answer");return;}
+                    if (valid.isEmpty()) {s.status=GameState.FINISHED;history.update(s,"Sin respuesta fiable");debug("No reliable AI answer");return;}
                     s.answer=valid.get();s.source="AI";
                     if(s.type==GameType.TRIVIA)trivia.put(s.question,s.answer);
                     schedule(s,()->sender.send(s.answer));
                 });
             });
-        } else { s.status=GameState.FINISHED; debug("No reliable answer"); }
+        } else { s.status=GameState.FINISHED;history.update(s,"Sin respuesta fiable"); debug("No reliable answer"); }
     }
     public Optional<String> solveLocal(GameType t,String input) {
         try { return switch(t) {
@@ -261,6 +281,7 @@ public final class GameManager implements AutoCloseable {
         if (s==null || s!=current || !canRespond(s)) return;
         if (pending != null) pending.cancel(false);
         long scheduleVersion = s.prepareSend(System.currentTimeMillis()+ms);
+        history.update(s,"Programada");
         debug("Answer: "+s.answer+" / Delay: "+ms+"ms / Scheduled");
         pending=queue.schedule(() -> clientThread.accept(() -> {
             synchronized(responseLock) {
@@ -270,6 +291,7 @@ public final class GameManager implements AutoCloseable {
             String answerKey=serverKey+"|"+s.answer.strip();
             if (s.type!=GameType.GUESS_THE_NUMBER && s.type!=GameType.CLICKABLE && System.currentTimeMillis()-sentAnswers.getOrDefault(answerKey,0L)<30000) {
                 s.finishSend(scheduleVersion,false);
+                history.update(s,"Repetición omitida");
                 debug("Repeated answer suppressed: "+s.answer);
                 return;
             }
@@ -277,13 +299,14 @@ public final class GameManager implements AutoCloseable {
             try { sent=send.call(); } catch(Exception ignored) { }
             if (s!=current || s.scheduleVersion!=scheduleVersion) return;
             s.finishSend(scheduleVersion,sent);
-            if (sent) {s.guesses++;if(s.type!=GameType.GUESS_THE_NUMBER && s.type!=GameType.CLICKABLE) sentAnswers.put(answerKey,System.currentTimeMillis());}
+            if (sent) {s.guesses++;if(s.sentAfterMs<0)s.sentAfterMs=TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-s.receivedAtNanos);if(s.type!=GameType.GUESS_THE_NUMBER && s.type!=GameType.CLICKABLE) sentAnswers.put(answerKey,System.currentTimeMillis());}
+            history.update(s,sent?"Enviada":"Envío cancelado");
             debug(sent?"Sent: "+s.answer:"Send cancelled");
             if (sent && config.get().stats) output.accept("Respuesta enviada ("+s.type+"): "+s.answer);
             }
         }),ms,TimeUnit.MILLISECONDS);
     }
-    public void cancel() { synchronized(responseLock) {if (pending!=null) pending.cancel(false); if (current!=null && current.status!=GameState.FINISHED) {current.cancelSend();debug("Scheduled response cancelled");} current=null;} }
+    public void cancel() { synchronized(responseLock) {if (pending!=null) pending.cancel(false); if (current!=null && current.status!=GameState.FINISHED) {history.update(current,current.guesses>0?"Enviada; sesión cerrada":"Cancelada");current.cancelSend();debug("Scheduled response cancelled");} current=null;} }
     public void resetServer(String server) {queue.execute(() -> {cancel();buffer=null;completedSession=null;seen.clear();sentAnswers.clear();serverKey=server;});}
     public void simulate(String line) {queue.execute(() -> {
         if (GameDetector.winner(line)) { simulationBuffer=null; output.accept("Simulación cancelada por ganador"); return; }

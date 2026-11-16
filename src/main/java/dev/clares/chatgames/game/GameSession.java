@@ -6,6 +6,7 @@ public final class GameSession {
     public String question = "", normalizedQuestion = "", answer = "", source = "";
     public long startTime = System.currentTimeMillis(), scheduledSendTime;
     public long receivedAtNanos=System.nanoTime(), responseDelayMs;
+    public long sentAfterMs=-1;
     public boolean firstSendScheduled;
     public long automationEpoch, gameEpoch;
     public String wordContext = "";

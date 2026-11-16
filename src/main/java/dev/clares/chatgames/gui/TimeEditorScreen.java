@@ -74,7 +74,7 @@ public final class TimeEditorScreen extends Screen {
         if(save!=null)save.active=draft.error().isEmpty();
     }
     private Button button(String label,int x,int y,int width,int height,Runnable action,String lore) {
-        return addRenderableWidget(Button.builder(Component.literal(label),b->action.run()).bounds(x,y,width,height).tooltip(Tooltip.create(Component.literal(lore))).build());
+        return addRenderableWidget(GuiTheme.button(label,x,y,width,height,action,lore));
     }
     @Override public void extractRenderState(GuiGraphicsExtractor c,int mx,int my,float delta) {
         c.fill(0,0,width,height,0xC7080E19);GuiTheme.panel(c,x,y,w,PANEL_HEIGHT);

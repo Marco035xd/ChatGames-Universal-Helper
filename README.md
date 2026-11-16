@@ -1,247 +1,163 @@
 # ChatGames Universal Helper
 
-Mod de cliente Fabric para resolver desafíos del chat y configurar sus respuestas mediante una interfaz privada. Versión **1.2.5**, desarrollada para **Minecraft Java 26.2**.
+**Un centro de control privado para los minijuegos del chat.** Versión **1.3.0** para **Minecraft Java 26.2**, con Fabric.
 
-## Descargar
+[Descargar JAR 1.3.0](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.0/chatgames-universal-helper-1.3.0.jar) · [Releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases) · [Cambios](CHANGELOG.md)
 
-[Descargar JAR 1.2.5](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.2.5/chatgames-universal-helper-1.2.5.jar) · [Ver releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases)
+## Instalar o actualizar
 
-Instala el JAR del mod en `mods`; el archivo `*-sources.jar` contiene el código fuente para desarrolladores.
+1. Cierra Minecraft.
+2. Coloca `chatgames-universal-helper-1.3.0.jar` en `mods` y retira el JAR anterior del helper. No instales el archivo `*-sources.jar`.
+3. Conserva `config/chatgames-universal-helper/`: mantiene tus tiempos, estados, contador y respuestas aprendidas.
+4. Inicia el juego y pulsa **G** para abrir el panel. **H** pausa o reanuda las respuestas.
 
-## Requisitos
-
-| Componente | Versión |
+| Requisito | Versión |
 | --- | --- |
 | Minecraft Java | 26.2 |
 | Java | 25 o superior |
 | Fabric Loader | 0.19.5 o superior |
-| Fabric API | 0.161.0+26.2 utilizada para compilar |
+| Fabric API | Compilado con 0.161.0+26.2 |
 
-El JAR se instala en el cliente del jugador. La GUI se dibuja localmente y sus comandos se registran como comandos de cliente. No hace falta instalar un plugin de interfaz en el servidor.
+El mod se instala en el cliente. La interfaz, los avisos `[CGH]` y los comandos `/cgedit` son locales. Las respuestas automáticas sí se envían al chat del servidor. G y H se pueden reasignar en **Opciones → Controles → ChatGames**; actúan cuando estás jugando sin otra pantalla abierta.
 
-## Instalación
+## Centro de control
 
-1. Cierra Minecraft e instala Fabric y Fabric API para 26.2.
-2. Coloca `chatgames-universal-helper-1.2.5.jar` en `mods`.
-3. Retira el JAR anterior del helper y deja una sola versión.
-4. Conserva `config/chatgames-universal-helper/` para mantener tus preferencias y respuestas aprendidas.
-5. Inicia Minecraft y pulsa **G** dentro del juego para abrir la interfaz, o utiliza `/cgedit gui`.
+Cinco pestañas comparten una interfaz oscura con acentos turquesa, navegación por teclado, descripciones al pasar el cursor y páginas adaptadas al tamaño de la ventana. La interfaz no pausa el mundo ni las respuestas.
 
-Esta actualización conserva los tiempos y preferencias configurados en 1.0.9, 1.1.0, 1.2.0, 1.2.1, 1.2.2, 1.2.3 y 1.2.4. Una configuración más antigua recibe la migración previa a 0–1 segundo una sola vez. No se reactivan juegos que hayas pausado.
+### Inicio
 
-### Base de respuestas actualizada
+Consulta los retos detectados, cuántos tuvieron algún envío, la media del primer envío y el contador del próximo minijuego. Incluye acceso a pausa general, tiempo general, contador, avisos y HUD.
 
-La versión 1.2.1 incorpora 15 preguntas de trivia, 57 patrones para completar palabras, 52 anagramas concretos y 19 palabras del servidor, a partir de 328 rondas confirmadas en 70 registros del **2 al 20 de octubre de 2026**. Los cinco tipos de juego observados ya estaban contemplados por el mod. Solo se utilizaron respuestas anunciadas por el servidor, conservando su escritura exacta.
+![Inicio del centro de control](docs/images/dashboard-130.jpg)
 
-Los datos nuevos también están disponibles con una configuración existente; las respuestas aprendidas y los diccionarios personales conservan su prioridad. El detalle y las referencias están en [ANALISIS_LOGS_2026_10_ES.md](ANALISIS_LOGS_2026_10_ES.md).
+### Juegos
 
-## Interfaz privada
+Busca por nombre en español o por identificador (`math`, `trivia`, etc.), sin distinguir tildes o mayúsculas. Filtra todos, activos o pausados. Las tarjetas conservan sus iconos, explicaciones e intervalos propios; el botón de estado cancela el envío pendiente de ese juego al pausarlo.
 
-Pulsa **G** dentro del juego, o utiliza `/cgedit gui` o `/cgedit menu`.
+![Buscador y tarjetas](docs/images/games-130.jpg)
 
-Puedes cambiar la tecla en **Opciones → Controles → Asignación de teclas → ChatGames → Abrir menú de ChatGames**. El atajo funciona con las respuestas automáticas en pausa y se activa cuando estás jugando sin otra pantalla abierta. La asignación se guarda mediante los controles de Minecraft.
+| Juego | Identificador | Función |
+| --- | --- | --- |
+| Matemáticas | `math` | Operaciones aritméticas. |
+| Ecuaciones | `variable` | Incógnitas con letras o símbolos. |
+| Trivia | `trivia` | Banco local y respuestas aprendidas. |
+| Ordenar palabras | `unscramble` | Anagramas con capitalización. |
+| Completar palabras | `fillout` | Letras faltantes. |
+| Palabra invertida | `unreverse` | Invierte el texto. |
+| Reacción | `reaction` | Escribe el texto pedido. |
+| Texto aleatorio | `random` | Conserva mayúsculas y minúsculas. |
+| Clic en el chat | `clickable` | Utiliza el componente del reto. |
+| Adivinar número | `guess_the_number` | Ajusta intentos según las pistas. |
 
-- **Tarjetas de minijuegos:** muestran un objeto, el nombre y el tiempo efectivo. Pasa el cursor sobre el objeto o tarjeta para ver el lore, ejemplos, estado y si hereda el tiempo general.
-- **Activo / Pausado:** cambia el estado de ese minijuego, lo guarda inmediatamente y cancela su envío pendiente al pausarlo.
-- **Clic en la tarjeta:** abre su editor de intervalo.
-- **Mod ACTIVADO / EN PAUSA:** controla todas las respuestas; conserva los estados individuales.
-- **Tiempo general:** edita el intervalo común de los modos que lo heredan.
-- **Avisos:** muestra u oculta el mensaje local «Respuesta enviada». Este control no apaga las respuestas.
-- **HUD:** muestra u oculta el panel de estado durante un desafío.
-- **Contador:** configura la cuenta superior en minutos:segundos, su visibilidad, el intervalo y el sonido final.
-- **Flechas:** cambian de página; el número de tarjetas se adapta a la escala de GUI.
+El editor admite **tiempo fijo**, **intervalo aleatorio** y **heredar el tiempo general**. Acepta punto o coma decimal (`2.1`, `2,1`), milisegundos (`500ms`) y pasos de **−0.1 / +0.1 s**, con límites de 0 a 60 segundos. Incluye el acceso rápido **2.1–2.9 s**. Guardar aplica el ajuste; Cancelar o Escape descarta la edición.
 
-En el editor puedes elegir **tiempo fijo**, **intervalo aleatorio** o **usar tiempo general**. Cada minijuego admite su propio tiempo decimal entre 0 y 60 segundos, escrito con punto o coma (`2.1` o `2,1`); también acepta unidades como `500ms`.
+El intervalo cuenta desde que el cliente recibe el **reto completo**, incluyendo cola y cálculo local. No hay una espera extra de 350 ms o 3 segundos para agrupar mensajes. Si el cálculo tarda más que el intervalo, el envío se realiza cuando la respuesta está lista. Los retos partidos esperan únicamente el texto que falta. Chat en vivo y registro se deduplican.
 
-- **Tiempo fijo:** escribe, por ejemplo, `2.1` para añadir siempre 2.1 segundos de espera.
-- **Intervalo aleatorio:** escribe `2.1` como mínimo y `2.9` como máximo para elegir una espera entre ambos límites en cada respuesta.
-- **Botones −0.1 / +0.1:** ajustan cada campo por décimas, como 2.1, 2.2, 2.3… 2.9, 3.0, 3.1. También funcionan en cualquier otro segundo hasta 60.
-- **Opciones rápidas:** tiempos fijos de 0, 1, 2, 3 y 5 segundos, y rangos de 0–1, **2.1–2.9** y 3–5 segundos.
+### Historial
 
-Para configurar el ejemplo: pulsa **G**, elige la tarjeta del minijuego, pulsa **2.1–2.9 s** o edita los campos y guarda los cambios. Los valores se conservan con precisión de milisegundos; el intervalo aleatorio puede elegir valores intermedios entre las décimas.
+Conserva hasta **100 retos detectados durante la ejecución actual** de Minecraft. Cada entrada muestra pregunta, respuesta calculada, fuente, estado, espera elegida, tiempo real del primer envío, cantidad de envíos y respuesta anunciada si se observó.
 
-**Guardar cambios** valida y escribe el ajuste; se conserva al reiniciar. **Cancelar** o **Escape** vuelve sin guardar el intervalo que estabas editando. El mínimo no puede superar al máximo. Si el guardado del intervalo falla, el valor anterior se conserva en memoria.
+**Enviada** significa que el cliente envió la respuesta. **Ronda finalizada** indica que se observó su cierre. Ninguno de esos estados confirma que hayas ganado. La media se calcula solo sobre las rondas retenidas con al menos un envío; los reintentos no cuentan como nuevas rondas.
 
-Los nuevos tiempos se aplican a las próximas respuestas. Una respuesta ya programada conserva su intervalo. Desde la versión 1.2.4, el tiempo se cuenta desde que el cliente **recibe el reto completo**, incluyendo el procesamiento y el cálculo local. Por ejemplo, 2.1–2.9 s elige el momento de envío dentro de ese intervalo desde la recepción. Si el cálculo ya consumió ese tiempo, el mod envía en cuanto obtiene la respuesta. Con **0 s** no añade una espera.
+El tiempo real se mide con un reloj monótono desde la recepción completa hasta el envío del cliente. No incluye el viaje de red ni el procesamiento del servidor. Al pausar las respuestas no registra retos nuevos; el contador sigue sincronizándose. Al cerrar Minecraft se borra este historial; no guarda conversaciones, nombres de jugadores ni direcciones de servidores.
 
-El mod procesa el chat en vivo y utiliza el registro como respaldo sin duplicar las respuestas. **Ya no espera 350 ms de silencio ni hasta 3 segundos para agrupar mensajes.** Solo conserva las líneas de un reto cuando falta texto necesario para resolverlo; los mensajes de jugadores no lo retrasan ni se mezclan con él.
+### Perfiles
 
-La latencia de conexión, la carga del cliente y el procesamiento del servidor pueden afectar al tiempo que muestra el servidor. La IA opcional también puede tardar más que el intervalo elegido. La GUI no pausa el servidor ni un mundo local, y el mod puede seguir respondiendo mientras está abierta.
+Guarda hasta **32 configuraciones**, con nombres de 1 a 24 letras minúsculas, números, `_` o `-`.
 
-### Capturas de la interfaz
+- Guardan tiempos generales y propios, juegos activos, HUD, avisos y todos los ajustes del contador.
+- **Ver ajustes** permite revisar los valores antes de aplicarlos.
+- **Aplicar** cancela las respuestas pendientes y conserva la pausa general actual.
+- **Deshacer carga** restaura la configuración anterior, incluso después de reiniciar. Puede alternar entre los dos últimos estados.
+- Guardar nuevo no sobrescribe un nombre existente. Eliminar requiere confirmación dentro del panel o `confirm` en el comando.
+- Los perfiles no incluyen IA, claves, rutas de logs, diagnóstico ni diccionarios personales.
 
-![Menú privado de ChatGames](docs/images/main.png)
+Los archivos se guardan en `config/chatgames-universal-helper/profiles/`. La configuración y los perfiles se escriben mediante archivos temporales y sustitución, evitando truncar el archivo anterior si falla la escritura. Un fallo al aplicar restaura los valores en memoria.
 
-![Información de trivia al pasar el cursor](docs/images/lore.png)
+![Gestión de perfiles](docs/images/profiles-130.jpg)
 
-![Editor de tiempo de respuesta](docs/images/editor.png)
+### Pruebas
+
+Prueba matemáticas, ecuaciones, trivia, anagramas, palabras incompletas, inversión y reacción. Elige el tipo, escribe el reto o carga un ejemplo y pulsa **Resolver localmente**. El resultado no se envía al servidor, no usa la IA externa ni crea una entrada en el historial.
+
+![Laboratorio local](docs/images/practice-130.jpg)
 
 ## Contador del próximo minijuego
 
-El panel superior muestra **«Nuevo minijuego en 07:58»**, con minutos y segundos durante toda la espera. Mientras el reto está activo, indica **«Minijuego en curso»**. Al responder alguien o terminar la ronda, muestra el tiempo restante hasta el siguiente inicio estimado.
+En **Inicio → Contador** puedes activar el panel superior, elegir vista permanente o solo los últimos diez segundos, modificar el intervalo en minutos y segundos y ajustar notas y volumen. La vista previa no cambia el horario real.
 
-El intervalo se cuenta **entre inicios de minijuegos**, no desde el ganador. Por ejemplo, con un intervalo de 08:01 y una respuesta a los 3 segundos, al terminar quedan 07:58. Cada inicio real vuelve a sincronizar la cuenta.
+El valor inicial **08:01** procede de 191 rondas y 176 pares consecutivos de noviembre: intervalos de **08:00 a 08:03**, con media de 480.60 segundos. Se cuenta **entre inicios**, no desde el ganador. Si alguien responde a los 3 segundos, quedarían aproximadamente 07:58.
 
-Se revisaron **191 rondas de noviembre** y **176 pares consecutivos**: el intervalo observado fue de **08:00 a 08:03**, con una media de 480.60 segundos. El valor inicial es **08:01**. El informe [ANALISIS_INTERVALOS_2026_11_ES.md](ANALISIS_INTERVALOS_2026_11_ES.md) incluye ejemplos de horas, diferencias y referencias a las líneas originales.
+Cada inicio observado vuelve a sincronizarlo. Al entrar espera un reto real; mientras la ronda está activa muestra «Minijuego en curso» y después el tiempo restante. Al vencer la estimación espera el próximo anuncio, sin inventar rondas. El contador tiene su propio interruptor, independiente de la pausa de respuestas.
 
-Pulsa **G → Contador** para cambiar:
-
-- **Contador: activado/apagado:** controla el panel y los avisos, independientemente de las respuestas automáticas.
-- **Vista: permanente / solo últimos 10 segundos:** elige entre la cuenta completa arriba o únicamente el aviso final.
-- **Minutos y segundos:** intervalo entre inicios; por ejemplo, minutos `8` y segundos `1`.
-- **Notas:** activa o silencia una nota privada por número durante los últimos 10 segundos.
-- **Volumen:** de 0 a 100%.
-
-**Guardar cambios** conserva los ajustes al reiniciar. **Cancelar** los descarta. **Probar 10 s** muestra una vista previa independiente: no guarda cambios ni modifica el horario del contador real. El sonido usa notas de Minecraft y no necesita paquetes de recursos.
-
-La versión 1.2.5 cambia el antiguo intervalo predeterminado de 25 minutos a 08:01. Conserva los intervalos distintos de ese antiguo valor, el estado activado/apagado, las notas, el volumen y los tiempos de respuesta de cada juego.
-
-Al entrar o cambiar de conexión, el mod espera observar un reto real antes de calcular la siguiente ronda. Se reconocen instrucciones, cabeceras de ChatGames/Minijuego y anuncios explícitos en español e inglés. El panel muestra que está esperando sincronización y no presenta una hora inventada.
-
-El contador es una **estimación del cliente**: un evento manual, cambios de horario, carga del servidor o latencia pueden alterar el siguiente inicio. Al vencer la cuenta, espera el próximo anuncio real. No inventa rondas sucesivas. La referencia se borra al desconectarse.
-
-```text
-/cgedit countdown
-/cgedit countdown on
-/cgedit countdown off
-/cgedit countdown view full
-/cgedit countdown view last10
-/cgedit countdown interval 8 1
-/cgedit countdown sound on
-/cgedit countdown sound off
-/cgedit countdown sync 60
-```
-
-`interval 8 1` establece 8 minutos y 1 segundo; la forma anterior `interval 25` sigue significando 25 minutos exactos. `sync 60` indica que conoces que faltan 60 segundos; no cambia el intervalo entre rondas. `/cgedit off` pausa las **respuestas automáticas**; el contador tiene su propio interruptor.
-
-Las capturas siguientes corresponden a la interfaz anterior del aviso final:
-
-![Ajustes del contador](docs/images/countdown-settings.png)
-
-![Vista previa del aviso](docs/images/countdown.png)
-
-## Minijuegos de la GUI
-
-| Juego | Función |
-| --- | --- |
-| Matemáticas | Sumas, restas, multiplicaciones y otras operaciones. |
-| Ecuaciones | Resuelve incógnitas de letras y símbolos en varias líneas. |
-| Trivia | Banco local y respuestas aprendidas; no copia la pregunta como respuesta. |
-| Ordenar palabras | Anagramas de una palabra o frase; conserva la capitalización. |
-| Completar palabras | Letras faltantes y escritura esperada por el servidor. |
-| Palabra invertida | Invierte el texto solicitado. |
-| Reacción | Escribe el texto del reto. |
-| Texto aleatorio | Conserva exactamente mayúsculas y minúsculas. |
-| Clic en el chat | Utiliza el componente pulsable del evento. |
-| Adivinar número | Ajusta los intentos según las pistas; usa el intervalo del modo. |
-
-La interfaz no incorpora HOVERABLE ni HUNT, MINE, PLACE, FISH, EAT, CRAFT o FURNACE. Su implementación anterior permanece fuera del alcance de esta revisión.
-
-Las respuestas desconocidas o ambiguas pueden quedar sin enviar si no hay una solución local fiable. Una IA externa es opcional y solo se consulta cuando está configurada. El banco incluido procede de los desafíos y resultados proporcionados durante el desarrollo; los anuncios posteriores del servidor permiten aprender respuestas.
+[Análisis de los intervalos de noviembre](ANALISIS_INTERVALOS_2026_11_ES.md). Es una estimación: los cambios del servidor, eventos manuales y la latencia pueden alterar el siguiente inicio.
 
 ## Comandos
 
-| Comando | Descripción |
+`/cgedit help 1` hasta `/cgedit help 4` abre la ayuda paginada. **Haz clic en un comando de la ayuda para prepararlo en el chat**, sin ejecutarlo. Los argumentos y nombres de perfiles tienen autocompletado.
+
+| Comando | Acción |
 | --- | --- |
-| `/cgedit gui` o `/cgedit menu` | Abre tu interfaz privada. |
-| `/cgedit on` / `/cgedit off` | Activa o pausa las respuestas; `off` cancela las pendientes. |
-| `/cgedit game <tipo> on/off` | Controla un juego específico. |
-| `/cgedit settime` | Muestra los intervalos configurados. |
+| `/cgedit gui` o `/cgedit menu` | Abre el centro de control. |
+| `/cgedit on` / `off` | Activa o pausa las respuestas. |
+| `/cgedit pause` / `resume` | Alternativas descriptivas para pausar y reanudar. |
+| `/cgedit game trivia on` | Activa un tipo; acepta `off` y los demás identificadores. |
+| `/cgedit hud on` / `off` | Muestra u oculta el panel del reto. |
+| `/cgedit stats on` / `off` | Controla el aviso local de respuesta enviada. |
+| `/cgedit report` | Resumen de los últimos 100 retos de la ejecución. |
+| `/cgedit history 1` | Historial, cinco rondas por página. |
+| `/cgedit last` / `status` | Último reto o estado del mod. |
+| `/cgedit profile list` | Lista los perfiles guardados. |
+| `/cgedit profile save infection` | Guarda un perfil nuevo. |
+| `/cgedit profile show infection` | Consulta sus ajustes. |
+| `/cgedit profile load infection` | Lo aplica y cancela los envíos pendientes. |
+| `/cgedit profile undo` | Restaura los ajustes anteriores a la carga. |
+| `/cgedit profile delete infection confirm` | Elimina únicamente ese perfil. |
+| `/cgedit settime` | Consulta tiempos. |
 | `/cgedit settime 0s` | Tiempo general sin espera añadida. |
-| `/cgedit settime random 0s 1s` | Intervalo general de 0–1 segundo. |
-| `/cgedit settime trivia 1s` | Tiempo propio de trivia. |
-| `/cgedit settime trivia 2.1` | Tiempo fijo de 2.1 segundos para trivia. También acepta `2,1`. |
-| `/cgedit settime trivia random 2.1 2.9` | Intervalo propio de 2.1 a 2.9 segundos. También acepta `2,1 2,9`. |
-| `/cgedit settime variable random 3s 5s` | Rango propio para ecuaciones. |
-| `/cgedit settime math default` | Hace que matemáticas vuelva a heredar el tiempo general. |
-| `/cgedit stats on/off` | Avisos locales de respuesta enviada. |
-| `/cgedit debug on/off` | Detalles de detección y envío. |
-| `/cgedit status` / `/cgedit last` | Estado del mod y último reto. |
-| `/cgedit cache stats` | Cantidad de entradas guardadas. |
+| `/cgedit settime random 0s 1s` | Intervalo general. |
+| `/cgedit settime trivia 2.1` | Tiempo fijo propio; también acepta `2,1`. |
+| `/cgedit settime trivia random 2.1 2.9` | Intervalo propio. |
+| `/cgedit settime math default` | Vuelve a heredar el tiempo general. |
+| `/cgedit countdown on` / `off` | Activa o apaga el contador. |
+| `/cgedit countdown interval 8 1` | Intervalo de 8 minutos y 1 segundo. |
+| `/cgedit countdown view full` / `last10` | Cuenta permanente o aviso final. |
+| `/cgedit countdown sound on` / `off` | Activa o silencia las notas. |
+| `/cgedit countdown sync 60` | Sincroniza manualmente: faltan 60 segundos. |
+| `/cgedit test math 6 * 7` | Prueba una solución sin enviarla. |
+| `/cgedit simulate <texto>` | Prueba la detección sin responder. |
+| `/cgedit debug on` / `off` | Detalles locales de detección y envío. |
+| `/cgedit testlog` | Diagnóstico de lectura del registro. |
+| `/cgedit cache stats` | Entradas guardadas. |
 | `/cgedit ai status` | Estado de la IA opcional. |
-| `/cgedit test <tipo> <texto>` | Prueba una solución sin enviarla. |
-| `/cgedit simulate <texto>` | Prueba la detección sin enviar una respuesta. |
-| `/cgedit testlog` | Diagnóstico del registro leído. |
-| `/cgedit help 1`, `2` o `3` | Ayuda con descripciones y autocompletado. |
 
-El modo llamado RANDOM tiene una sintaxis propia: `/cgedit settime random 0s` fija su tiempo y `/cgedit settime random random 0s 1s` configura su rango. `/cgedit settime random 0s 1s` sigue configurando el rango **general**. Los modos con un intervalo propio lo conservan al cambiar el general.
+Para el tipo RANDOM: `settime random 2s` fija su tiempo, `settime random random 0s 1s` configura su rango y `settime random 0s 1s` configura el rango general.
 
-## Archivos de configuración
+## Datos y compatibilidad
 
-Se guardan en `config/chatgames-universal-helper/`:
+La actualización conserva las preferencias de 1.2.5. Siguen disponibles la tecla G, los intervalos decimales, la detección inmediata y las migraciones anteriores. Los modos pausados conservan su estado. Los tiempos ya programados se conservan al editar un intervalo; una pausa o una carga de perfil cancela los pendientes.
 
-- `config.json`: activación, modos, tiempo general, intervalos propios, HUD y avisos.
-- `trivia.json` y `trivia-cache.json`: respuestas personales y aprendidas.
-- `word-cache.json`: respuestas aprendidas para palabras.
-- `words-es.txt` y `words-en.txt`: vocabulario personal.
+La base incluye las respuestas confirmadas de las 328 rondas de octubre: [análisis de octubre](ANALISIS_LOGS_2026_10_ES.md) y [análisis histórico](ANALISIS_LOGS_ES.md). Los diccionarios personales y las respuestas aprendidas mantienen su prioridad. Una solución desconocida o ambigua puede quedar sin enviar; la IA externa es opcional.
 
-La GUI escribe los mismos ajustes que los comandos. Puedes ampliar tus preguntas y palabras; reinicia después de editar los archivos a mano. No subas configuraciones privadas, registros completos ni credenciales al repositorio.
+No se muestran HOVERABLE ni los objetivos HUNT, MINE, PLACE, FISH, EAT, CRAFT o FURNACE en las tarjetas. Sus implementaciones anteriores no se amplían en esta versión.
 
-## Compilar y probar
+## Desarrollo y verificación
 
-El proyecto incluye el Gradle Wrapper **9.7.1**. Con Java 25 instalado:
-
-```bash
-# Linux / macOS
-chmod +x gradlew
-./gradlew build
-```
+Con Java 25:
 
 ```powershell
-# Windows
 .\gradlew.bat build
+.\gradlew.bat runClient
 ```
 
-El JAR instalable se genera en `build/libs/chatgames-universal-helper-1.2.5.jar`. El archivo `*-sources.jar` contiene fuentes y no se instala en `mods`. `build` compila, ejecuta las pruebas JUnit y remapea el mod para Minecraft. `./gradlew runClient` inicia el cliente de desarrollo; necesita entorno gráfico y descarga los recursos del juego.
+En Linux/macOS: `./gradlew build`. Gradle Wrapper 9.7.1 genera el JAR instalable y el de fuentes en `build/libs/`. GitHub Actions compila y ejecuta las pruebas en cada push.
 
-## Publicar en GitHub
+**93 pruebas JUnit aprobadas**, con detección y tiempos anteriores, perfiles y restauración ante fallos, privacidad del formato, cancelación de envíos, historial deduplicado, pruebas locales, búsqueda, distribución y comandos nuevos.
 
-1. Descomprime el ZIP de código fuente.
-2. Sube el **contenido de la carpeta del proyecto**: `src/`, `gradle/`, `gradlew`, `gradlew.bat`, archivos Gradle, `README.md`, `LICENSE`, `WORDLIST_NOTICE.md`, `docs/`, `.gitignore` y `.github/`.
-3. No subas `build/`, `.gradle/`, `run/`, tus logs ni configuraciones personales. `.gitignore` ya los excluye.
-4. El workflow de `.github/workflows/build.yml` usa Java 25, compila y ejecuta pruebas cuando se hace push o se abre un pull request.
-5. Crea una Release con etiqueta `v1.2.5` y adjunta el JAR instalable como archivo de descarga.
+Verificación visual y funcional en Minecraft 26.2, con un mundo local separado: G/H, pestañas, búsqueda, laboratorio, guardar/cargar/deshacer perfiles, respuesta real `6 * 7 → 42`, cierre de ronda, contador e historial. En esa prueba se eligieron 403 ms y se midieron 416 ms hasta el envío. No se probó en el servidor remoto Infection. Las capturas corresponden al cliente de desarrollo.
 
-El proyecto no contiene tokens ni claves de API. La IA opcional toma la clave de una variable de entorno configurada por el usuario.
+No se distribuyen mundos de pruebas, configuraciones personales ni registros completos. El historial es temporal; los perfiles y la configuración se guardan localmente.
 
-## Estructura
+## Licencia
 
-- `gui/`: tarjetas, paginación, editores y vista previa del contador.
-- `countdown/`: reloj, sincronización, notas y ajustes del aviso.
-- `command/`: comandos de cliente, ayuda y autocompletado.
-- `game/`: detección, sesiones, programación y cancelación de respuestas.
-- `solver/`: matemáticas, ecuaciones, trivia y palabras.
-- `config/`: preferencias, persistencia y migraciones.
-- `chat/`, `log/`, `hud/`, `ai/`: envío, lectura, estado e IA opcional.
-- `src/test/`: pruebas de solucionadores, registros, cancelación y configuración de la GUI.
-
-## Licencia y atribuciones
-
-El código del mod se distribuye bajo MIT; consulta [LICENSE](LICENSE). Los diccionarios ampliados son contenido de terceros bajo **CC BY-SA 4.0** y tienen su atribución en [WORDLIST_NOTICE.md](WORDLIST_NOTICE.md). [ANALISIS_LOGS_ES.md](ANALISIS_LOGS_ES.md) conserva el análisis histórico de los retos incorporados en 1.0.7.
-
-
-## Verificación de 1.2.5
-
-Compilación con `./gradlew --offline build` y **82 pruebas JUnit aprobadas**, sin fallos, errores ni pruebas omitidas. Las pruebas nuevas comprueban el texto visible en minutos:segundos, el tiempo descontado tras el resultado, la sincronización de fuentes duplicadas, las 176 mediciones de noviembre, los controles y los ajustes guardados. La apariencia del panel no se probó manualmente en Minecraft ni se verificó el horario futuro del servidor remoto.
-
-## Verificación de 1.2.4
-
-Compilación con `./gradlew --offline build` y **75 pruebas JUnit aprobadas**. Las pruebas nuevas comprueban la detección inmediata desde el chat y desde el registro sin forzar el vaciado de mensajes, el plazo de 2.3 segundos del anagrama `aotP → Pato`, el tiempo de cola incluido en el intervalo, las preguntas partidas en español e inglés, las ecuaciones y la deduplicación de las 328 rondas de octubre. El cambio no se probó en el servidor remoto de Minecraft.
-
-## Verificación de 1.2.3
-
-Compilación completada con `./gradlew --offline build`: **69 pruebas JUnit aprobadas**, sin fallos, errores ni pruebas omitidas. Las pruebas nuevas comprueban los pasos exactos de 0.1 segundos entre 0 y 60, el guardado de tiempos fijos e intervalos decimales por minijuego y los comandos con punto o coma. Se verificó que el JAR tiene la versión 1.2.3 y conserva las bases de respuestas y las traducciones del acceso con G. La distribución visual del editor no se probó manualmente dentro de Minecraft.
-
-## Verificación de 1.2.2
-
-Compilación completada con `./gradlew --offline build`: **65 pruebas JUnit aprobadas**, sin fallos, errores ni pruebas omitidas. Se verificaron la versión 1.2.2 del JAR y las traducciones del nuevo control incluidas en el archivo. La pulsación de G no se probó manualmente dentro de Minecraft.
-
-## Verificación de 1.2.1
-
-Compilación completada con `./gradlew build`: **65 pruebas JUnit aprobadas**, sin fallos, errores ni pruebas omitidas. Las pruebas nuevas comprueban la detección y las respuestas exactas de las 328 rondas de octubre, su disponibilidad en una instalación con configuración existente, la conservación de los datos personales y las tildes del vocabulario nuevo. Se verificó además que el JAR generado contiene la versión 1.2.1 y los cuatro recursos de respuestas actualizados.
-
-## Verificación de 1.2.0
-
-62 pruebas JUnit aprobadas, sin fallos, errores ni pruebas omitidas. Se verificaron la secuencia 10–1, las notas únicas, la deduplicación de chat y log, los avisos en español, la desconexión, los ajustes guardados y la cancelación. Las pruebas anteriores de los solucionadores y los registros confirmados también pasaron.
-
-Además, el cliente se ejecutó con Minecraft 26.2, Fabric Loader 0.19.5 y Java 25. En un mundo local se comprobaron la apertura de la GUI con objetos, la cuenta atrás sobre el HUD, los controles del contador y respuestas reales: `6 * 7 → 42` y `3*x + 4 = 19 → 5`, una vez cada una. El motor de sonido ejecutó las notas en un dispositivo virtual de prueba. No se verificó el horario automático del servidor remoto; el intervalo debe coincidir con su configuración.
+Código bajo [MIT](LICENSE). Los diccionarios ampliados de terceros conservan su atribución **CC BY-SA 4.0** en [WORDLIST_NOTICE.md](WORDLIST_NOTICE.md).

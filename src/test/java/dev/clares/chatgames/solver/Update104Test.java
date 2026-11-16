@@ -80,11 +80,11 @@ class Update104Test {
     }
 
     @Test void helpListsEveryCommandWithDescriptionInThreeShortPages() {
-        assertEquals(3,HelpPages.count());
-        var entries=java.util.stream.IntStream.rangeClosed(1,3).mapToObj(HelpPages::page).flatMap(page -> page.entries().stream()).toList();
-        assertEquals(18,entries.size());
+        assertEquals(4,HelpPages.count());
+        var entries=java.util.stream.IntStream.rangeClosed(1,4).mapToObj(HelpPages::page).flatMap(page -> page.entries().stream()).toList();
+        assertEquals(24,entries.size());
         assertTrue(entries.stream().allMatch(entry -> entry.command().startsWith("/cgedit ") && !entry.description().isBlank()));
         assertThrows(IllegalArgumentException.class,()->HelpPages.page(0));
-        assertThrows(IllegalArgumentException.class,()->HelpPages.page(4));
+        assertThrows(IllegalArgumentException.class,()->HelpPages.page(5));
     }
 }

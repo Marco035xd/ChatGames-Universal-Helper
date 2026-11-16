@@ -42,13 +42,18 @@ public final class ChatGamesUniversalHelperClient implements ClientModInitialize
             if(client.player!=null)client.gui.hud.getChat().addClientSystemMessage(Component.literal("[CGH] ").append(msg));
         });
         GuiController gui=new GuiController(config,manager,countdown.clock());
+        var category=KeyMapping.Category.register(Identifier.fromNamespaceAndPath("chatgames_universal_helper","main"));
+        KeyMapping pause=KeyMappingHelper.registerKeyMapping(new KeyMapping("key.chatgames_universal_helper.pause",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_H,category));
         KeyMapping openGui=KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.chatgames_universal_helper.open_gui",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_G,
-            KeyMapping.Category.register(Identifier.fromNamespaceAndPath("chatgames_universal_helper","main"))));
+            category));
         ClientTickEvents.END_CLIENT_TICK.register(c -> {
             // Consume all queued presses, including ones received while another screen is open.
             while(openGui.consumeClick()) {
                 if(c.player!=null && c.gui.screen()==null && c.isWindowActive())gui.requestOpen();
+            }
+            while(pause.consumeClick())if(c.player!=null&&c.gui.screen()==null&&c.isWindowActive()) {
+                manager.setEnabled(!config.get().enabled);feedback.accept(config.get().enabled?"Respuestas activadas (H).":"Respuestas en pausa (H). Pendientes cancelados.");
             }
             gui.tick(c);
         });

@@ -109,5 +109,5 @@ public final class ConfigManager {
     }
     public Path dir() { return dir; }
     public ModConfig get() { return config; }
-    public synchronized void save() { try { Files.writeString(path, GSON.toJson(config), StandardCharsets.UTF_8); } catch (Exception e) { throw new IllegalStateException(e); } }
+    public synchronized void save() { try { AtomicFiles.write(path, GSON.toJson(config)); } catch (Exception e) { throw new IllegalStateException(e); } }
 }

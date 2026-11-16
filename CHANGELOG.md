@@ -1,3 +1,17 @@
+# 1.3.0 — Centro de control
+
+- Panel con cinco pestañas: Inicio, Juegos, Historial, Perfiles y Pruebas.
+- Tema uniforme, pestaña seleccionada resaltada, búsqueda sin tildes y filtros por estado.
+- Historial temporal de 100 retos: espera elegida, tiempo de primer envío, fuente, resultado observado y resumen. No atribuye victorias.
+- Hasta 32 perfiles con vista previa, carga, confirmación de borrado y deshacer persistente; excluyen IA, rutas de logs y datos aprendidos.
+- Laboratorio local con ejemplos y resultados asíncronos; no envía chat ni consulta IA.
+- H para pausar/reanudar, reasignable; se mantiene G.
+- Comandos profile, history, report, hud, pause y resume, autocompletado de perfiles y cuarta página de ayuda con comandos pulsables.
+- HUD del reto renovado con estado en español y barra de espera; respeta F1 y las pantallas abiertas.
+- Escritura por sustitución de config/perfiles y restauración en memoria ante fallos de carga.
+- El lector de logs espera a que termine su hilo al cerrar, evitando bloqueos intermitentes del archivo en Windows.
+- 93 pruebas automatizadas y revisión funcional en Minecraft 26.2 con un mundo local de desarrollo.
+
 # Cambios
 
 ## 1.2.5

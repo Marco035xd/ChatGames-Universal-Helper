@@ -30,6 +30,14 @@ public final class HelpPages {
             new Entry("/cgedit debug on/off", "Activa o desactiva los detalles de detección y envío."),
             new Entry("/cgedit cache stats", "Consulta cuántas respuestas hay guardadas."),
             new Entry("/cgedit ai status", "Consulta el estado y el modelo de la IA opcional.")
+        )),
+        new Page("Panel, perfiles e historial",List.of(
+            new Entry("/cgedit profile save <nombre>","Guarda tus tiempos, juegos, HUD, avisos y contador. No sobrescribe perfiles ni copia datos de IA."),
+            new Entry("/cgedit profile list · /cgedit profile show <nombre>","Lista tus perfiles y consulta sus ajustes antes de cargarlos."),
+            new Entry("/cgedit profile load <nombre> · /cgedit profile undo","Aplica un perfil o restaura los ajustes anteriores. Cancela los envíos pendientes."),
+            new Entry("/cgedit history <página> · /cgedit report","Últimos 100 retos de esta ejecución y tiempos de envío. Enviar no confirma ganar."),
+            new Entry("/cgedit pause · /cgedit resume · /cgedit hud on/off","Pausa y reanuda respuestas o controla el HUD. Teclas: G abre el panel y H pausa."),
+            new Entry("/cgedit profile delete <nombre> confirm","Borra solo el perfil elegido. La configuración en uso se conserva.")
         ))
     );
     private HelpPages() { }

@@ -9,12 +9,12 @@ class CommandTreeTest {
     @Test void suggestsCommandsModesTogglesAndHelpPages() throws Exception {
         CommandDispatcher<Object> dispatcher=new CommandDispatcher<>();
         dispatcher.register(CommandTree.build(command->1));
-        assertEquals(Set.of("on","off","help","status","testlog","last","cache","ai","debug","stats","game","settime","test","simulate","gui","menu","countdown"),suggest(dispatcher,"cgedit "));
-        assertEquals(Set.of("help"),suggest(dispatcher,"cgedit h"));
+        assertEquals(Set.of("on","off","help","status","testlog","last","cache","ai","debug","stats","game","settime","test","simulate","gui","menu","countdown","pause","resume","report","history","profile","hud"),suggest(dispatcher,"cgedit "));
+        assertEquals(Set.of("help","history","hud"),suggest(dispatcher,"cgedit h"));
         assertEquals(Set.of("unreverse","unscramble"),suggest(dispatcher,"cgedit game un"));
         assertEquals(Set.of("on","off"),suggest(dispatcher,"cgedit game unscramble "));
         assertEquals(Set.of("on","off"),suggest(dispatcher,"cgedit stats "));
-        assertEquals(Set.of("1","2","3"),suggest(dispatcher,"cgedit help "));
+        assertEquals(Set.of("1","2","3","4"),suggest(dispatcher,"cgedit help "));
         assertEquals(Set.of("stats"),suggest(dispatcher,"cgedit cache "));
         assertTrue(suggest(dispatcher,"cgedit settime ").containsAll(Set.of("math","variable","fillout","random")));
         assertTrue(suggest(dispatcher,"cgedit settime math ").containsAll(Set.of("random","default","0s","1s","2s","2000ms")));

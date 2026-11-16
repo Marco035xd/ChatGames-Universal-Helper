@@ -26,5 +26,8 @@ class LogWatcherTest {
             Files.writeString(path,"[19:00:03] [Render thread/INFO]: [System] [CHAT] NEW\n",StandardOpenOption.APPEND);
             assertEquals("NEW",messages.poll(3,TimeUnit.SECONDS));
         }
+        // close() must release the handle before Windows can rotate/delete the log.
+        Files.delete(path);
+        assertFalse(Files.exists(path));
     }
 }

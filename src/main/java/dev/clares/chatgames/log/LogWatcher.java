@@ -11,12 +11,14 @@ public final class LogWatcher implements AutoCloseable {
     private final Consumer<String> listener;
     private volatile boolean running, watching;
     private volatile String lastChat = "";
-    private Thread thread;
+    private volatile Thread thread;
     public LogWatcher(Path path, Consumer<String> listener) { this.path = path; this.listener = listener; }
     public Path path() { return path; }
     public boolean watching() { return watching; }
     public String lastChat() { return lastChat; }
-    public void start() {
+    public synchronized void start() {
+        if(running)return;
+        if(thread!=null&&thread.isAlive())throw new IllegalStateException("El lector de logs todavía se está cerrando.");
         running = true;
         thread = new Thread(this::loop, "ChatGames-log-watcher");
         thread.setDaemon(true); thread.start();
@@ -37,10 +39,10 @@ public final class LogWatcher implements AutoCloseable {
                     try (RandomAccessFile raf = new RandomAccessFile(path.toFile(), "r")) {
                         raf.seek(position);
                         byte[] bytes = new byte[8192];
-                        while (raf.getFilePointer() < length) {
+                        while (running && raf.getFilePointer() < length) {
                             int n = raf.read(bytes, 0, (int)Math.min(bytes.length, length - raf.getFilePointer()));
                             if (n < 0) break;
-                            for (int i=0; i<n; i++) {
+                            for (int i=0; i<n && running; i++) {
                                 if (bytes[i] == '\n') {
                                     String raw = pending.toString(StandardCharsets.UTF_8).replaceAll("\\r$", ""); pending.reset();
                                     LogChatParser.parse(raw).ifPresent(msg -> { lastChat = msg; listener.accept(msg); });
@@ -54,6 +56,15 @@ public final class LogWatcher implements AutoCloseable {
             } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
               catch (Exception e) { watching = false; try { Thread.sleep(500); } catch (InterruptedException x) { Thread.currentThread().interrupt(); break; } }
         }
+        watching=false;
     }
-    @Override public void close() { running = false; if (thread != null) thread.interrupt(); }
+    @Override public void close() {
+        running=false;
+        Thread worker=thread;
+        if(worker==null)return;
+        worker.interrupt();
+        if(worker!=Thread.currentThread()) {
+            try{worker.join(2000);}catch(InterruptedException e){Thread.currentThread().interrupt();}
+        }
+    }
 }
