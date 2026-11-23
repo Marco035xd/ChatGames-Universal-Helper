@@ -81,7 +81,7 @@ public final class ChatGamesScreen extends Screen {
     private void history() {
         var entries=games.history().entries();visibleHistory=entries;int size=Math.max(1,(layout.height()-134)/32);page=Math.min(page,Math.max(0,(entries.size()-1)/size));
         for(int i=page*size;i<Math.min(entries.size(),(page+1)*size);i++) {
-            var e=entries.get(i);String line=TIME.format(Instant.ofEpochMilli(e.started()))+" · "+title(e.type())+" · "+e.status();
+            var e=entries.get(i);String line=TIME.format(Instant.ofEpochMilli(e.started()))+" · "+title(e.type())+(e.difficulty().isEmpty()?"":" · "+e.difficulty())+" · "+e.status();
             button(line,layout.x()+12,layout.y()+102+(i-page*size)*32,layout.width()-24,28,()->minecraft.gui.setScreen(new RoundDetailScreen(this,e)),
                 "Reto: "+e.question()+"\nRespuesta: "+(e.answer().isEmpty()?"—":e.answer())+"\nClic: ver tiempos y resultado.");
         }
@@ -151,7 +151,7 @@ public final class ChatGamesScreen extends Screen {
         int w=layout.width()-24,x=layout.x()+12,y=layout.y();
         text(g,"CHATGAMES",12,10,w,GuiTheme.GOLD);
         String badge=settings.get().enabled?"ACTIVO":"EN PAUSA";g.text(font,badge,x+w-font.width(badge),y+10,settings.get().enabled?GuiTheme.GREEN:GuiTheme.RED);
-        text(g,"Centro de control · 1.3.0 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
+        text(g,"Centro de control · 1.3.1 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
         if(tab==0) {
             var s=games.history().summary();int mw=(w-12)/3;
             metric(g,x,y+74,mw,"Retos",Integer.toString(s.rounds()));metric(g,x+mw+6,y+74,mw,"Con envío",Integer.toString(s.answered()));metric(g,x+2*(mw+6),y+74,mw,"Media envío",seconds(s.averageMs()));

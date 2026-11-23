@@ -1,3 +1,12 @@
+# 1.3.1 — Nuevo formato de ChatGames
+
+- Reconoce Fácil, Normal y Experto; muestra el nivel en el HUD, historial y comandos de diagnóstico.
+- Extrae las operaciones completas del anuncio, con varios grupos de paréntesis. Evita responder con un fragmento de una operación incompleta o inválida.
+- Reconoce «Jugador respondió … en … s.» y «Recibió los premios de …»: cierre, cancelación, aprendizaje y contador tras el resultado.
+- Añade 4 preguntas de trivia, 5 anagramas exactos, 4 patrones para completar palabras y 1 palabra canónica confirmados en los logs.
+- Conserva el formato anterior, tiempos decimales, estados, perfiles y respuestas personales.
+- 100 pruebas JUnit aprobadas; reproducción local del reto Experto con respuesta 589, dificultad y cierre de ronda verificados en Minecraft 26.2.
+
 # 1.3.0 — Centro de control
 
 - Panel con cinco pestañas: Inicio, Juegos, Historial, Perfiles y Pruebas.

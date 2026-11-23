@@ -1,6 +1,7 @@
 package dev.clares.chatgames.game;
 import dev.clares.chatgames.solver.VariableSolver;
 import dev.clares.chatgames.solver.SymbolVariableSolver;
+import dev.clares.chatgames.solver.MathParser;
 import java.text.Normalizer;
 import java.util.Optional;
 import java.util.Locale;
@@ -9,6 +10,10 @@ import java.util.regex.*;
 public final class GameDetector {
     public record Detection(GameType type, String question, DetectionConfidence confidence) { }
     private static final Pattern MATH = Pattern.compile("(?<![\\p{L}\\d])([(+\\-]?\\s*\\d+(?:\\.\\d+)?(?:\\s*[+*/%^×÷−–—xX·✕-]\\s*\\(?\\s*-?\\d+(?:\\.\\d+)?\\s*\\)?)+)(?![\\p{L}\\d])");
+    private static final Pattern MATH_PROMPT=Pattern.compile("(?iu)^resuelve este problema\\s*[:：]?\\s*(.*)$");
+    private static final Pattern MATH_TEXT=Pattern.compile("[\\d.\\s()+*/%^×÷−–—xX·✕-]+");
+    private static final Pattern NEW_RESULT=Pattern.compile("(?iu)^¡?[a-z0-9_]{1,16}\\s+respondi[oó]\\s+(.{1,80}?)\\s+en\\s+\\d+(?:[.,]\\d+)?\\s*s\\.[! ]*$");
+    private static final Pattern LEVEL=Pattern.compile("(?iu)^\\((f[aá]cil|normal|experto)\\)$");
     private static final Pattern VARIABLE = Pattern.compile("(?i)(?<![\\p{L}\\d])([\\d.xX+*×·✕−–—\\-\\s]+\\s*=\\s*[\\d.xX+*×·✕−–—\\-\\s]+)(?![\\p{L}\\d])");
     private static final Pattern RANGE = Pattern.compile("(?i)(?:entre|between|from)\\s+(\\d+)\\s+(?:y|and|to|a)\\s+(\\d+)");
     private static final Pattern TICK = Pattern.compile("[`'\"]([^`'\"]{1,80})[`'\"]");
@@ -22,6 +27,8 @@ public final class GameDetector {
     private static String normalized(String s) { return Normalizer.normalize(s,Normalizer.Form.NFD).replaceAll("\\p{M}","").toLowerCase(Locale.ROOT); }
     public static boolean banner(String s) { return normalized(s).matches("(?s).*(?:minijuego|mini.?game|chat.?game|desafio|challenge).*" ) || normalized(s).matches("(?s).*\\b(?:tienes|you have)\\s+\\d+\\s+(?:segundos|seconds).*" ); }
     public static boolean winner(String s) {
+        if(playerChat(s)||s.stripLeading().startsWith("[CGH]"))return false;
+        for(String line:s.split("\\R"))if(NEW_RESULT.matcher(line.strip()).matches()||normalized(line).strip().matches("recibio los premios de (?:facil|normal|experto)\\."))return true;
         return normalized(s).matches("(?s).*(?:respondio primero|fue recompensado|answered first|winner|tiempo agotado|time is up|time['’]s up|nadie respondio|no one answered|has won|ganador|(?:was|is) (?:the )?(?:first|fastest) (?:player )?to (?:answer|type|write|get|fill|complete|unscramble|unreverse|solve)|answered .{0,100}correctly|successfully (?:unscrambled|unreversed|solved)|has (?:correctly |successfully )?(?:unscrambled|unreversed|completed|solved)|fue (?:el )?(?:primero|mas rapido) en (?:responder|escribir|poner en orden|ordenar|completar|obtener)|respondio correctamente:|(?:el )?(?:juego|evento)(?: de [^!\\n]{1,50})? (?:ha|se ha) terminado|la respuesta correcta (?:era|es)|respuesta correcta:|the correct answer was|(?:game|event) (?:is |has |was )?(?:now )?(?:over|ended|expired|cancelled|canceled)).*");
     }
     /** Command confirmations are not playable prompts, even when they name a game. */
@@ -31,11 +38,29 @@ public final class GameDetector {
     /** Only result messages may teach an answer; ordinary player chat cannot. */
     public static Optional<String> announcedAnswer(String line) {
         if (!winner(line)) return Optional.empty();
+        for(String part:line.split("\\R")) {
+            Matcher result=NEW_RESULT.matcher(part.strip());
+            if(result.matches())return Optional.of(result.group(1).strip());
+        }
         for (Pattern pattern:new Pattern[]{QUOTED_ANSWER,ANNOUNCED_ANSWER,SOLVED_ANSWER}) {
             Matcher matcher=pattern.matcher(line);
             if (matcher.find()) return Optional.of(matcher.group(1).strip());
         }
         return Optional.empty();
+    }
+    public static String difficulty(String block) {
+        for(String line:block.split("\\R")) {
+            Matcher level=LEVEL.matcher(line.strip());
+            if(level.matches())return switch(normalized(level.group(1))){case "facil"->"Fácil";case "normal"->"Normal";default->"Experto";};
+        }
+        return "";
+    }
+    private static Optional<Detection> completeMath(String expression) {
+        String candidate=expression.replaceAll("(?iu)[,;]?\\s*(?:tienes|you have)\\s+\\d+\\s+(?:segundos|seconds).*$", "").strip()
+            .replaceAll("^[`\"‘]|[`\"’]$", "").strip();
+        if(!MATH_TEXT.matcher(candidate).matches())return Optional.empty();
+        try{MathParser.solve(candidate);return Optional.of(new Detection(GameType.MATH,candidate,DetectionConfidence.HIGH));}
+        catch(IllegalArgumentException|ArithmeticException e){return Optional.empty();}
     }
     private static boolean unscrambleInstruction(String normalized) {
         return normalized.matches("(?s).*(?:descifra|unscramble|anagrama|poner en orden|ordena(?:r)? (?:correctamente )?(?:esta |la )?palabra).*" );
@@ -98,6 +123,25 @@ public final class GameDetector {
         if (winner(block)) return Optional.empty();
         String[] lines=block.split("\\R"); String text=block.replace('`',' ').trim();
         String lower=normalized(text);
+        // The new server sends a full expression, including several parenthesized groups.
+        // Never fall back to a matching substring when that full expression is incomplete.
+        for(int i=0;i<lines.length;i++) {
+            Matcher prompt=MATH_PROMPT.matcher(lines[i].strip());
+            if(prompt.matches()) {
+                StringBuilder expression=new StringBuilder(prompt.group(1));
+                for(int j=i+1;j<lines.length&&expression.length()<256;j++) {
+                    String part=lines[j].strip();
+                    if(part.isEmpty())continue;
+                    if(!MATH_TEXT.matcher(part).matches())break;
+                    expression.append(' ').append(part);
+                }
+                String candidate=expression.toString().strip();
+                // Keep the existing equation mode when an old server uses this label for x.
+                if(candidate.contains("=")&&VariableSolver.solve(candidate).isPresent())
+                    return Optional.of(new Detection(GameType.VARIABLE,candidate,DetectionConfidence.HIGH));
+                return completeMath(candidate);
+            }
+        }
         Optional<String> trivia=explicitTrivia(lines);
         if(trivia.isPresent())return Optional.of(new Detection(GameType.TRIVIA,trivia.get(),DetectionConfidence.HIGH));
         // A quoted glyph after "solve for" is the unknown, not a word to copy.
@@ -120,6 +164,7 @@ public final class GameDetector {
                 if (VariableSolver.solve(equation).isPresent() && (contextual || l.matches("(?s).*(?:resuelve|solve|calcula).*")))
                     return Optional.of(new Detection(GameType.VARIABLE,equation,DetectionConfidence.HIGH));
             }
+            if(contextual&&MATH_TEXT.matcher(raw.replace("`","")).matches()&&raw.matches(".*[+*/%^×÷−–—xX·✕-].*"))return completeMath(raw);
             Matcher math=MATH.matcher(raw);
             if (math.find() && (contextual || l.matches("(?s).*(?:resuelve|solve|calcula|cuanto es|what is).*"))) return Optional.of(new Detection(GameType.MATH,math.group(1).trim(),DetectionConfidence.HIGH));
             Matcher mask=MASK.matcher(raw);

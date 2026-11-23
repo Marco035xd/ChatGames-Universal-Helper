@@ -37,13 +37,13 @@ public final class ClientCommands {
                     int page=p.length<2?1:Integer.parseInt(p[1]);var entries=games.history().entries();
                     int pages=Math.max(1,(entries.size()+4)/5);if(page<1||page>pages)throw new IllegalArgumentException("Elige una página entre 1 y "+pages+".");
                     say.accept("Historial · "+page+"/"+pages+" · "+entries.size()+" retos");
-                    for(var e:entries.subList((page-1)*5,Math.min(page*5,entries.size())))say.accept(dev.clares.chatgames.gui.GameCatalog.title(e.type())+" · "+e.status()+" · "+e.answer()+" · envío "+RoundHistory.seconds(e.sentAfterMs()));
+                    for(var e:entries.subList((page-1)*5,Math.min(page*5,entries.size())))say.accept(dev.clares.chatgames.gui.GameCatalog.title(e.type())+(e.difficulty().isEmpty()?"":" · "+e.difficulty())+" · "+e.status()+" · "+e.answer()+" · envío "+RoundHistory.seconds(e.sentAfterMs()));
                     if(entries.isEmpty())say.accept("Aún no hay retos detectados en esta ejecución.");
                 }
                 case "hud" -> {boolean previous=c.hud;c.hud=toggle(p,1);try{settings.save();}catch(RuntimeException e){c.hud=previous;throw e;}say.accept("HUD: "+(c.hud?"activado":"apagado"));}
                 case "status" -> say.accept("Respuestas automáticas: "+(c.enabled?"ACTIVADAS":"DESACTIVADAS")+" | Avisos: "+(c.stats?"on":"off")+" | Log: "+watcher.watching()+" | Sesión: "+(games.current()==null?"ninguna":games.current().status));
                 case "testlog" -> say.accept("Log: "+(watcher.watching()?"DETECTED":"WAITING")+" | Path: "+watcher.path()+" | Watching: "+watcher.watching()+" | Last chat line: "+watcher.lastChat());
-                case "last" -> {GameSession s=games.last(); say.accept(s==null?"Sin desafío":"Tipo: "+s.type+" | Entrada: "+s.question+" | Respuesta: "+s.answer+" | Fuente: "+s.source+" | Estado: "+s.status);}
+                case "last" -> {GameSession s=games.last(); say.accept(s==null?"Sin desafío":"Tipo: "+s.type+" | Dificultad: "+(s.difficulty.isEmpty()?"no indicada":s.difficulty)+" | Entrada: "+s.question+" | Respuesta: "+s.answer+" | Fuente: "+s.source+" | Estado: "+s.status);}
                 case "cache" -> say.accept("Entradas locales en caché: "+games.cacheSize());
                 case "ai" -> say.accept("IA: "+c.ai.enabled+" / "+c.ai.provider+" / modelo "+c.ai.model+" / clave de entorno "+c.ai.apiKeyEnv);
                 case "debug","stats" -> {boolean value=toggle(p,1); if(p[0].equalsIgnoreCase("debug"))c.debug=value;else c.stats=value;settings.save();say.accept(p[0].equalsIgnoreCase("stats")?"Avisos de respuesta enviada: "+(value?"on":"off")+". Para pausar las respuestas: /cgedit off":"debug: "+value);}

@@ -16,7 +16,7 @@ public final class ChatGamesHud {
             int x=8,y=72,w=Math.min(220,g.guiWidth()-16);
             // Below the compact countdown, away from the latest chat lines and hotbar.
             g.fill(x,y,x+w,y+49,0xE6172535);g.fill(x,y,x+2,y+49,0xFF7DE1D2);
-            g.text(client.font,GameCatalog.title(s.type),x+8,y+6,0xFF9FE8CB);
+            g.text(client.font,client.font.plainSubstrByWidth(GameCatalog.title(s.type)+(s.difficulty.isEmpty()?"":" · "+s.difficulty),w-16),x+8,y+6,0xFF9FE8CB);
             String question=s.question.replaceAll("\\s+"," ")+(s.answer.isBlank()?"":" → "+s.answer);
             g.text(client.font,client.font.plainSubstrByWidth(question,w-16),x+8,y+18,0xFFE8F1F5);
             long left=Math.max(0,s.scheduledSendTime-System.currentTimeMillis());

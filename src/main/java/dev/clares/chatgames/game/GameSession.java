@@ -4,6 +4,7 @@ public final class GameSession {
     public final String id = UUID.randomUUID().toString();
     public GameType type = GameType.UNKNOWN;
     public String question = "", normalizedQuestion = "", answer = "", source = "";
+    public String difficulty="";
     public long startTime = System.currentTimeMillis(), scheduledSendTime;
     public long receivedAtNanos=System.nanoTime(), responseDelayMs;
     public long sentAfterMs=-1;

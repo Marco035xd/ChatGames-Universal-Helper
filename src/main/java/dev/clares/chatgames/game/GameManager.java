@@ -138,6 +138,7 @@ public final class GameManager implements AutoCloseable {
             cancel(); completedSession=null; current=new GameSession(); current.type=t; current.question=line; current.answer=value; current.source="COMPONENT"; current.confidence=DetectionConfidence.HIGH; current.status=GameState.WAITING; last=current;
             tagSession(current,epoch);
             current.receivedAtNanos=receivedAt;current.responseDelayMs=delay(t);
+            current.difficulty=GameDetector.difficulty(line);
             history.update(current,"Resolviendo");
         }
         debug("Detected "+t+" / "+value);
@@ -211,6 +212,7 @@ public final class GameManager implements AutoCloseable {
         GameSession s=new GameSession(); s.type=detected.type(); s.question=detected.question(); s.normalizedQuestion=key; s.confidence=detected.confidence(); s.status=GameState.SOLVING; current=last=s;
         tagSession(s,epoch);s.wordContext=GameDetector.wordContext(b.text());
         s.receivedAtNanos=b.receivedAtNanos();s.responseDelayMs=delay(s.type);
+        s.difficulty=GameDetector.difficulty(b.text());
         history.update(s,"Resolviendo");
         debug("Detected "+s.type+" / "+s.question);
         if (EnumSet.of(GameType.HUNT,GameType.MINE,GameType.PLACE,GameType.FISH,GameType.EAT,GameType.CRAFT,GameType.FURNACE).contains(s.type)) {s.status=GameState.DETECTED;history.update(s,"Objetivo manual"); output.accept("Objetivo "+s.type+": "+s.question); return;}

@@ -1,13 +1,13 @@
 # ChatGames Universal Helper
 
-**Un centro de control privado para los minijuegos del chat.** Versión **1.3.0** para **Minecraft Java 26.2**, con Fabric.
+**Un centro de control privado para los minijuegos del chat.** Versión **1.3.1** para **Minecraft Java 26.2**, con Fabric.
 
-[Descargar JAR 1.3.0](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.0/chatgames-universal-helper-1.3.0.jar) · [Releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases) · [Cambios](CHANGELOG.md)
+[Descargar JAR 1.3.1](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.1/chatgames-universal-helper-1.3.1.jar) · [Releases](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases) · [Cambios](CHANGELOG.md)
 
 ## Instalar o actualizar
 
 1. Cierra Minecraft.
-2. Coloca `chatgames-universal-helper-1.3.0.jar` en `mods` y retira el JAR anterior del helper. No instales el archivo `*-sources.jar`.
+2. Coloca `chatgames-universal-helper-1.3.1.jar` en `mods` y retira el JAR anterior del helper. No instales el archivo `*-sources.jar`.
 3. Conserva `config/chatgames-universal-helper/`: mantiene tus tiempos, estados, contador y respuestas aprendidas.
 4. Inicia el juego y pulsa **G** para abrir el panel. **H** pausa o reanuda las respuestas.
 
@@ -19,6 +19,18 @@
 | Fabric API | Compilado con 0.161.0+26.2 |
 
 El mod se instala en el cliente. La interfaz, los avisos `[CGH]` y los comandos `/cgedit` son locales. Las respuestas automáticas sí se envían al chat del servidor. G y H se pueden reasignar en **Opciones → Controles → ChatGames**; actúan cuando estás jugando sin otra pantalla abierta.
+
+## Nuevo sistema de Infection (1.3.1)
+
+Reconoce los niveles **Fácil, Normal y Experto** y los muestra en el HUD, el historial y los comandos `last` e `history`. La dificultad se toma del anuncio del servidor; el tiempo de respuesta sigue siendo el configurado para cada tipo de juego.
+
+Las operaciones se extraen completas, conservando sus paréntesis y la prioridad de multiplicaciones y divisiones. Por ejemplo: `765 ÷ 9 × 6 + (104 - 25) = 589`. Una expresión incompleta o inválida no se resuelve usando solo un fragmento.
+
+También reconoce el nuevo resultado `Jugador respondió 589 en 23.3 s.`: cierra la ronda, cancela un envío pendiente, aprende la respuesta cuando corresponde y permite al contador mostrar el tiempo restante desde el inicio. El formato anterior sigue admitido.
+
+Se añadieron **4 preguntas de trivia**, **5 anagramas exactos**, **4 patrones de palabras incompletas** y **1 palabra canónica** a partir de resultados confirmados. [Análisis del sistema nuevo](ANALISIS_CHATGAMES_2026_11_23_ES.md).
+
+![Detalle de una ronda Experto verificada en un mundo local](docs/images/expert-131.jpg)
 
 ## Centro de control
 
@@ -135,7 +147,7 @@ Para el tipo RANDOM: `settime random 2s` fija su tiempo, `settime random random 
 
 ## Datos y compatibilidad
 
-La actualización conserva las preferencias de 1.2.5. Siguen disponibles la tecla G, los intervalos decimales, la detección inmediata y las migraciones anteriores. Los modos pausados conservan su estado. Los tiempos ya programados se conservan al editar un intervalo; una pausa o una carga de perfil cancela los pendientes.
+La actualización conserva las preferencias de 1.2.5 y 1.3.0. Siguen disponibles la tecla G, los intervalos decimales, la detección inmediata y las migraciones anteriores. Los modos pausados conservan su estado. Los tiempos ya programados se conservan al editar un intervalo; una pausa o una carga de perfil cancela los pendientes.
 
 La base incluye las respuestas confirmadas de las 328 rondas de octubre: [análisis de octubre](ANALISIS_LOGS_2026_10_ES.md) y [análisis histórico](ANALISIS_LOGS_ES.md). Los diccionarios personales y las respuestas aprendidas mantienen su prioridad. Una solución desconocida o ambigua puede quedar sin enviar; la IA externa es opcional.
 
@@ -152,9 +164,9 @@ Con Java 25:
 
 En Linux/macOS: `./gradlew build`. Gradle Wrapper 9.7.1 genera el JAR instalable y el de fuentes en `build/libs/`. GitHub Actions compila y ejecuta las pruebas en cada push.
 
-**93 pruebas JUnit aprobadas**, con detección y tiempos anteriores, perfiles y restauración ante fallos, privacidad del formato, cancelación de envíos, historial deduplicado, pruebas locales, búsqueda, distribución y comandos nuevos.
+**100 pruebas JUnit aprobadas**, con detección y tiempos anteriores, perfiles y restauración ante fallos, cancelación de envíos, historial deduplicado y comandos. Las siete pruebas nuevas reproducen las 26 rondas recientes, los resultados sin comillas, la dificultad, expresiones incompletas, aprendizaje, sincronización del contador y conservación de preferencias.
 
-Verificación visual y funcional en Minecraft 26.2, con un mundo local separado: G/H, pestañas, búsqueda, laboratorio, guardar/cargar/deshacer perfiles, respuesta real `6 * 7 → 42`, cierre de ronda, contador e historial. En esa prueba se eligieron 403 ms y se midieron 416 ms hasta el envío. No se probó en el servidor remoto Infection. Las capturas corresponden al cliente de desarrollo.
+Verificación visual y funcional en Minecraft 26.2, con un mundo local separado: G/H, pestañas, búsqueda, laboratorio, guardar/cargar/deshacer perfiles, respuesta real `6 * 7 → 42`, cierre de ronda, contador e historial. En la comprobación de 1.3.1 se reprodujo el reto Experto de la captura: respuesta 589, espera elegida de 631 ms, un envío a los 636 ms y cierre con el nuevo formato. El historial mostró dificultad Experto y respuesta anunciada 589. No se probó en el servidor remoto Infection. Las capturas corresponden al cliente de desarrollo.
 
 No se distribuyen mundos de pruebas, configuraciones personales ni registros completos. El historial es temporal; los perfiles y la configuración se guardan localmente.
 
