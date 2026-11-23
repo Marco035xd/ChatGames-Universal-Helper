@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+  <title id="title">ChatGames Universal Helper</title>
+  <desc id="desc">Centro de control para los minijuegos de Infection. Interfaz, tiempos por juego, perfiles e historial para Minecraft Fabric.</desc>
+  <defs>
+    <linearGradient id="background" x2="1" y2="1"><stop stop-color="#0d1728"/><stop offset="1" stop-color="#142b3a"/></linearGradient>
+    <linearGradient id="accent"><stop stop-color="#81e5d7"/><stop offset="1" stop-color="#4b9eaf"/></linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#8be0d0" stroke-opacity=".045"/></pattern>
+  </defs>
+  <rect width="1280" height="420" rx="24" fill="url(#background)"/>
+  <rect width="1280" height="420" rx="24" fill="url(#grid)"/>
+  <path d="M24 0H1256Q1280 0 1280 24V5H0V24Q0 0 24 0Z" fill="url(#accent)"/>
+  <path d="M1064 0 854 420M1164 0 954 420M1264 0 1054 420" stroke="#81e5d7" stroke-width="48" opacity=".025"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <rect x="48" y="49" width="44" height="44" rx="11" fill="#81e5d7"/>
+    <path d="M59 60h22v15H68l-7 6v-6h-2Z" fill="#122735"/>
+    <path d="M63 66h14m-14 4h9" stroke="#81e5d7" stroke-width="2"/>
+    <text x="108" y="77" fill="#a9c4ce" font-size="18" font-weight="600" letter-spacing="3">UNIVERSAL HELPER</text>
+    <text x="44" y="163" fill="#f1f7f9" font-size="72" font-weight="800" letter-spacing="-2">CHATGAMES</text>
+    <text x="48" y="209" fill="#81e5d7" font-size="27" font-weight="600">Cada reto, bajo tu control.</text>
+    <text x="48" y="251" fill="#aec0cd" font-size="19">Tiempos precisos. Respuestas locales. Todo en un panel.</text>
+    <g font-size="15" font-weight="600" text-anchor="middle">
+      <rect x="48" y="296" width="132" height="34" rx="17" fill="#203c4a"/><text x="114" y="319" fill="#d4e6eb">MINECRAFT 26.2</text>
+      <rect x="192" y="296" width="87" height="34" rx="17" fill="#203c4a"/><text x="235" y="319" fill="#d4e6eb">FABRIC</text>
+      <rect x="291" y="296" width="112" height="34" rx="17" fill="#203c4a"/><text x="347" y="319" fill="#d4e6eb">CLIENTE</text>
+    </g>
+    <text x="48" y="379" fill="#7895a6" font-size="15" letter-spacing="1">INFECTION · INTERFAZ · PERFILES · HISTORIAL</text>
+  </g>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <rect x="734" y="54" width="492" height="312" rx="15" fill="#091320" stroke="#365667"/>
+    <path d="M750 54H1210Q1226 54 1226 70V92H734V70Q734 54 750 54" fill="#1d3344"/>
+    <circle cx="755" cy="74" r="4" fill="#81e5d7"/><circle cx="770" cy="74" r="4" fill="#607e91"/><circle cx="785" cy="74" r="4" fill="#607e91"/>
+    <text x="1205" y="79" text-anchor="end" fill="#8be0ad" font-size="12" letter-spacing="1.5">CHATGAMES / ACTIVO</text>
+    <text x="762" y="127" fill="#ffcf70" font-size="13" font-weight="600" letter-spacing="2">MINIJUEGO · EXPERTO</text>
+    <text x="762" y="167" fill="#eef5f7" font-size="24" font-family="Consolas,monospace">765 ÷ 9 × 6 + (104 - 25)</text>
+    <rect x="762" y="190" width="436" height="69" rx="8" fill="#182e3d"/>
+    <path d="M762 198v53" stroke="#81e5d7" stroke-width="3"/>
+    <text x="782" y="214" fill="#9db6c4" font-size="13">RESPUESTA LOCAL</text>
+    <text x="782" y="244" fill="#81e5d7" font-size="29" font-weight="700">589</text>
+    <path d="m1157 221 9 9 18-19" stroke="#81e5d7" stroke-width="3" fill="none"/>
+    <text x="762" y="292" fill="#9db6c4" font-size="14">TU CONFIGURACIÓN</text>
+    <text x="1198" y="292" text-anchor="end" fill="#ffcf70" font-size="16">2.1–2.9 s</text>
+    <rect x="762" y="313" width="204" height="29" rx="6" fill="#24434d"/><text x="864" y="333" text-anchor="middle" fill="#b7efe1" font-size="13">G · ABRIR PANEL</text>
+    <rect x="979" y="313" width="219" height="29" rx="6" fill="#1d3040"/><text x="1088" y="333" text-anchor="middle" fill="#aec0cd" font-size="13">H · PAUSAR / REANUDAR</text>
+  </g>
+</svg>
