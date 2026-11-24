@@ -1,3 +1,11 @@
+# 1.4.1 — Doce preguntas de los nuevos registros
+
+- Añade 12 preguntas de trivia con respuestas anunciadas por el servidor: Tritón, Merge sort, 6, Hercio, Ribosoma, Dijkstra, Raqueta, 7, Antoine de Saint-Exupéry, H2O, Júpiter y Oro. El banco incluido llega a 121 preguntas.
+- Revisa 23 rondas completas de los logs `2026-11-24-2.log.gz` y `2026-11-24-3.log.gz`: 12 de Trivia y 11 de Matemáticas. Los once problemas matemáticos se resuelven con el motor existente.
+- Excluye el resultado «Plata» porque no tiene una pregunta visible en los archivos; no se crean asociaciones supuestas.
+- Conserva tiempos por categoría y nivel, juegos pausados, perfiles, contador y respuestas personales. No cambia la revisión de configuración ni los solucionadores.
+- 114 pruebas JUnit aprobadas: nuevas rondas, respuestas exactas, conservación de ajustes y archivos, prioridad de datos personales, deduplicación de chat/log y cancelación al finalizar.
+
 # 1.4.0 — ChatGames Infection Server y tiempos por dificultad
 
 - Nuevo nombre visible: **ChatGames Infection Server**, en el panel, controles, ayuda, metadatos y README. El JAR se llama `chatgames-infection-server-1.4.0.jar`; se conserva el identificador interno y la configuración existente.
