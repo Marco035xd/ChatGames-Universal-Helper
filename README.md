@@ -1,27 +1,28 @@
 <a id="inicio"></a>
 
 <p align="center">
-  <img src="docs/images/readme-banner.svg" alt="ChatGames Universal Helper — cada reto, bajo tu control" width="1000" />
+  <img src="docs/images/infection-logo.png" alt="Logo de Infection" width="240" />
 </p>
 
-<h1 align="center">Tu centro de control para ChatGames</h1>
+<h1 align="center">ChatGames Universal Helper</h1>
 
 <p align="center">
+  Tu centro de control para los minijuegos de Infection.<br />
   Resuelve los retos del chat, ajusta tus tiempos y prepara tus perfiles.<br />
   <strong>Un mod de cliente para Minecraft Java 26.2 con Fabric.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.3.1"><img alt="Versión 1.3.1" src="https://img.shields.io/badge/versi%C3%B3n-1.3.1-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.3.2"><img alt="Versión 1.3.2" src="https://img.shields.io/badge/versi%C3%B3n-1.3.2-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <img alt="Minecraft Java 26.2" src="https://img.shields.io/badge/Minecraft-26.2-8be0ad?style=flat-square&amp;labelColor=172535" />
   <img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-aec0cd?style=flat-square&amp;labelColor=172535" />
   <img alt="Java 25 o superior" src="https://img.shields.io/badge/Java-25%2B-ffcf70?style=flat-square&amp;labelColor=172535" />
-  <a href="#verificacion"><img alt="100 pruebas aprobadas en 1.3.1" src="https://img.shields.io/badge/pruebas_en_1.3.1-100_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="#verificacion"><img alt="103 pruebas aprobadas en 1.3.2" src="https://img.shields.io/badge/pruebas_en_1.3.2-103_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <a href="LICENSE"><img alt="Licencia MIT del código" src="https://img.shields.io/badge/c%C3%B3digo-MIT-aec0cd?style=flat-square&amp;labelColor=172535" /></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.1/chatgames-universal-helper-1.3.1.jar"><strong>↓ Descargar JAR 1.3.1</strong></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.2/chatgames-universal-helper-1.3.2.jar"><strong>↓ Descargar JAR 1.3.2</strong></a>
   &nbsp; · &nbsp;
   <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases">Todas las versiones</a>
   &nbsp; · &nbsp;
@@ -56,7 +57,7 @@
 ## 🚀 Empieza en cuatro pasos
 
 1. **Cierra Minecraft** e instala Fabric y Fabric API para **26.2**.
-2. Descarga [**chatgames-universal-helper-1.3.1.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.1/chatgames-universal-helper-1.3.1.jar) y colócalo en `mods`.
+2. Descarga [**chatgames-universal-helper-1.3.2.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.2/chatgames-universal-helper-1.3.2.jar) y colócalo en `mods`.
 3. Si estás actualizando, retira el JAR anterior y conserva `config/chatgames-universal-helper/`.
 4. Entra al juego y pulsa **G** para abrir el centro de control.
 
@@ -113,7 +114,7 @@ La descarga pertenece a un repositorio privado: necesitas iniciar sesión en Git
   </tr>
 </table>
 
-<sub>Capturas del cliente de desarrollo: paneles de 1.3.0 y detalle de Experto de 1.3.1. Haz clic para ampliarlas. La portada es una ilustración del proyecto.</sub>
+<sub>Capturas del cliente de desarrollo: paneles de 1.3.0 y detalle de Experto de 1.3.1. Haz clic para ampliarlas. El logo superior es la imagen proporcionada para el proyecto.</sub>
 
 <details>
 <summary><strong>Historial, perfiles y pruebas: qué guardan y cómo funcionan</strong></summary>
@@ -171,6 +172,18 @@ El tiempo cuenta desde la recepción del **reto completo**, incluyendo cola y c�
 - Para el tipo RANDOM: `settime random 2s` fija su tiempo; `settime random random 0s 1s` configura su rango; `settime random 0s 1s` configura el rango general.
 
 </details>
+
+## 🆕 Base actualizada el 24 de noviembre · 1.3.2
+
+Tres preguntas nuevas de trivia, incorporadas con la respuesta exacta anunciada por el servidor:
+
+| Dificultad | Pregunta | Respuesta |
+| --- | --- | --- |
+| Experto | ¿En qué año se firmó el Tratado de Tordesillas? | **1494** |
+| Normal | ¿Qué metal es líquido a temperatura ambiente habitual? | **Mercurio** |
+| Experto | ¿Qué protocolo de transporte establece conexiones y entrega fiable y ordenada? | **TCP** |
+
+Se revisaron 14 rondas en los dos archivos: 10 ya estaban incorporadas y 4 corresponden al día 24, incluida `66 + 26 → 92`. Los tipos observados siguen siendo Matemáticas y Trivia. [Ver análisis y referencias](ANALISIS_CHATGAMES_2026_11_24_ES.md).
 
 ## 🆕 Compatible con el nuevo sistema de Infection
 
@@ -259,7 +272,7 @@ La ayuda de `/cgedit help 1` a `/cgedit help 4` tiene autocompletado y comandos 
 
 ## 🧪 Comprobado con retos reales de los registros
 
-**100 pruebas JUnit aprobadas en 1.3.1.** Incluyen las 328 rondas de octubre y 26 rondas recientes, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias.
+**103 pruebas JUnit aprobadas en 1.3.2.** Incluyen las 328 rondas de octubre, las 26 de la actualización anterior y las 14 de los logs del 23 y 24 de noviembre, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias. Las diez rondas del día 23 ya estaban en el corpus anterior.
 
 El ejemplo Experto se reprodujo en un mundo local de Minecraft 26.2: respuesta **589**, espera elegida de **631 ms**, un envío a los **636 ms** y cierre con el nuevo formato. La conexión al servidor remoto Infection no formó parte de esta comprobación.
 
@@ -268,7 +281,7 @@ El ejemplo Experto se reprodujo en un mundo local de Minecraft 26.2: respuesta *
 <details>
 <summary><strong>Compatibilidad y datos locales</strong></summary>
 
-La actualización mantiene las preferencias de 1.2.5 y 1.3.0: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
+La actualización mantiene las preferencias de 1.2.5, 1.3.0 y 1.3.1: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
 
 La configuración y los perfiles se guardan en `config/chatgames-universal-helper/`. El historial es temporal. No se distribuyen registros completos, conversaciones, configuraciones privadas ni mundos de pruebas.
 

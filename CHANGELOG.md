@@ -1,3 +1,11 @@
+# 1.3.2 — Trivia del 24 de noviembre y logo
+
+- Añade tres preguntas confirmadas por el servidor: Tratado de Tordesillas → 1494; metal líquido → Mercurio; transporte fiable y ordenado → TCP.
+- Revisa 14 rondas en los dos logs: 10 ya incorporadas y 4 del día 24. Los tipos observados siguen siendo Matemáticas y Trivia.
+- Incorpora el logo de Infection proporcionado por el usuario a la cabecera del README y actualiza la descarga destacada.
+- Conserva tiempos, juegos pausados, contador, perfiles y respuestas personales.
+- 103 pruebas JUnit aprobadas, incluidas las rondas recientes, disponibilidad en instalaciones existentes y deduplicación de chat/log.
+
 # 1.3.1 — Nuevo formato de ChatGames
 
 - Reconoce Fácil, Normal y Experto; muestra el nivel en el HUD, historial y comandos de diagnóstico.
