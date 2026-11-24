@@ -77,7 +77,7 @@
 
 El mod se instala en el cliente. La interfaz, los comandos `/cgedit` y los avisos `[CGH]` son locales; las respuestas automáticas se envían al chat del servidor. La interfaz permite que las respuestas sigan funcionando mientras está abierta y no pausa el mundo.
 
-La descarga pertenece a un repositorio privado: necesitas iniciar sesión en GitHub con una cuenta que tenga acceso.
+El repositorio y las descargas son públicos: puedes acceder al código y descargar el JAR sin iniciar sesión en GitHub.
 
 </details>
 
