@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
-  <title id="title">ChatGames Universal Helper</title>
+  <title id="title">ChatGames Infection Server</title>
   <desc id="desc">Centro de control para los minijuegos de Infection. Interfaz, tiempos por juego, perfiles e historial para Minecraft Fabric.</desc>
   <defs>
     <linearGradient id="background" x2="1" y2="1"><stop stop-color="#0d1728"/><stop offset="1" stop-color="#142b3a"/></linearGradient>
@@ -14,7 +14,7 @@
     <rect x="48" y="49" width="44" height="44" rx="11" fill="#81e5d7"/>
     <path d="M59 60h22v15H68l-7 6v-6h-2Z" fill="#122735"/>
     <path d="M63 66h14m-14 4h9" stroke="#81e5d7" stroke-width="2"/>
-    <text x="108" y="77" fill="#a9c4ce" font-size="18" font-weight="600" letter-spacing="3">UNIVERSAL HELPER</text>
+    <text x="108" y="77" fill="#a9c4ce" font-size="18" font-weight="600" letter-spacing="3">INFECTION SERVER</text>
     <text x="44" y="163" fill="#f1f7f9" font-size="72" font-weight="800" letter-spacing="-2">CHATGAMES</text>
     <text x="48" y="209" fill="#81e5d7" font-size="27" font-weight="600">Cada reto, bajo tu control.</text>
     <text x="48" y="251" fill="#aec0cd" font-size="19">Tiempos precisos. Respuestas locales. Todo en un panel.</text>

@@ -50,12 +50,14 @@ public final class CommandTree {
                 .suggests((ctx,builder)->{builder.suggest("2.9s");builder.suggest("3s");builder.suggest("5s");return builder.buildFuture();})
                 .executes(ctx->run.applyAsInt("settime random "+StringArgumentType.getString(ctx,"min")+" "+StringArgumentType.getString(ctx,"max")))));
         random.then(range("settime random",run)).then(inherit("settime random",run));
+        levels(random,"settime random",run);
         time.then(random);
         for(GameType type:GameType.values()) {
             if(type==GameType.UNKNOWN || type==GameType.RANDOM)continue;
             String name=type.name().toLowerCase(Locale.ROOT), prefix="settime "+name;
-            time.then(LiteralArgumentBuilder.<S>literal(name).executes(ctx->run.applyAsInt(prefix))
-                .then(duration(prefix,run)).then(range(prefix,run)).then(inherit(prefix,run)));
+            LiteralArgumentBuilder<S> node=LiteralArgumentBuilder.<S>literal(name).executes(ctx->run.applyAsInt(prefix))
+                .then(duration(prefix,run)).then(range(prefix,run)).then(inherit(prefix,run));
+            levels(node,prefix,run);time.then(node);
         }
         LiteralArgumentBuilder<S> countdown=LiteralArgumentBuilder.<S>literal("countdown").executes(ctx->run.applyAsInt("countdown status"));
         for(String value:new String[]{"on","off","status"})countdown.then(LiteralArgumentBuilder.<S>literal(value).executes(ctx->run.applyAsInt("countdown "+value)));
@@ -88,6 +90,13 @@ public final class CommandTree {
         }
         root.then(profile);
         return root;
+    }
+    private static <S> void levels(LiteralArgumentBuilder<S> node,String prefix,ToIntFunction<String> run) {
+        for(String level:new String[]{"easy","facil","normal","medium","media","medio","expert","experto","hard","dificil"}) {
+            String command=prefix+" "+level;
+            node.then(LiteralArgumentBuilder.<S>literal(level).executes(ctx->run.applyAsInt(command))
+                .then(duration(command,run)).then(range(command,run)).then(inherit(command,run)));
+        }
     }
     private static <S> RequiredArgumentBuilder<S,String> duration(String prefix,ToIntFunction<String> run) {
         return RequiredArgumentBuilder.<S,String>argument("delay",new DurationArgument())

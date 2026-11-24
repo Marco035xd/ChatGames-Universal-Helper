@@ -4,7 +4,7 @@
   <img src="docs/images/infection-logo.png" alt="Logo de Infection" width="240" />
 </p>
 
-<h1 align="center">ChatGames Universal Helper</h1>
+<h1 align="center">ChatGames Infection Server</h1>
 
 <p align="center">
   Tu centro de control para los minijuegos de Infection.<br />
@@ -13,16 +13,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.3.2"><img alt="Versión 1.3.2" src="https://img.shields.io/badge/versi%C3%B3n-1.3.2-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.4.0"><img alt="Versión 1.4.0" src="https://img.shields.io/badge/versi%C3%B3n-1.4.0-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <img alt="Minecraft Java 26.2" src="https://img.shields.io/badge/Minecraft-26.2-8be0ad?style=flat-square&amp;labelColor=172535" />
   <img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-aec0cd?style=flat-square&amp;labelColor=172535" />
   <img alt="Java 25 o superior" src="https://img.shields.io/badge/Java-25%2B-ffcf70?style=flat-square&amp;labelColor=172535" />
-  <a href="#verificacion"><img alt="103 pruebas aprobadas en 1.3.2" src="https://img.shields.io/badge/pruebas_en_1.3.2-103_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="#verificacion"><img alt="111 pruebas aprobadas en 1.4.0" src="https://img.shields.io/badge/pruebas_en_1.4.0-111_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <a href="LICENSE"><img alt="Licencia MIT del código" src="https://img.shields.io/badge/c%C3%B3digo-MIT-aec0cd?style=flat-square&amp;labelColor=172535" /></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.2/chatgames-universal-helper-1.3.2.jar"><strong>↓ Descargar JAR 1.3.2</strong></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.0/chatgames-infection-server-1.4.0.jar"><strong>↓ Descargar JAR 1.4.0</strong></a>
   &nbsp; · &nbsp;
   <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases">Todas las versiones</a>
   &nbsp; · &nbsp;
@@ -43,7 +43,7 @@
 
 | 🎛️ Configura a tu ritmo | 📚 Aprende de cada ronda |
 | --- | --- |
-| **Tiempos por minijuego.** Valores fijos o intervalos aleatorios, con pasos de 0.1 segundos. | **Respuestas locales.** Trivia y palabras con datos confirmados y aprendizaje del resultado. |
+| **Tiempos por dificultad.** Fácil, Media y Difícil en cada minijuego, con intervalos decimales y pasos de 0.1 s. | **Respuestas locales.** Trivia y palabras con datos confirmados y aprendizaje del resultado. |
 | **Perfiles guardados.** Prepara tus ajustes, revisa sus valores y deshaz la última carga. | **Historial de 100 retos.** Pregunta, respuesta, dificultad y tiempo real del primer envío. |
 | **Cuenta atrás.** Minutos y segundos hasta el próximo minijuego estimado. | **Laboratorio privado.** Prueba un reto sin enviar mensajes al servidor. |
 
@@ -57,13 +57,13 @@
 ## 🚀 Empieza en cuatro pasos
 
 1. **Cierra Minecraft** e instala Fabric y Fabric API para **26.2**.
-2. Descarga [**chatgames-universal-helper-1.3.2.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.3.2/chatgames-universal-helper-1.3.2.jar) y colócalo en `mods`.
+2. Descarga [**chatgames-infection-server-1.4.0.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.0/chatgames-infection-server-1.4.0.jar) y colócalo en `mods`.
 3. Si estás actualizando, retira el JAR anterior y conserva `config/chatgames-universal-helper/`.
 4. Entra al juego y pulsa **G** para abrir el centro de control.
 
 > **Atajos:** `G` abre el panel · `H` pausa o reanuda las respuestas · `/cgedit gui` abre la misma interfaz.
 >
-> Puedes reasignarlos en **Opciones → Controles → ChatGames**. Los atajos actúan mientras juegas sin otra pantalla abierta. Instala el JAR principal; `-sources.jar` contiene las fuentes para desarrolladores.
+> Puedes reasignarlos en **Opciones → Controles → ChatGames Infection Server**. Los atajos actúan mientras juegas sin otra pantalla abierta. Instala el JAR principal; `-sources.jar` contiene las fuentes para desarrolladores.
 
 <details>
 <summary><strong>Ver requisitos y funcionamiento del cliente</strong></summary>
@@ -123,7 +123,7 @@ La descarga pertenece a un repositorio privado: necesitas iniciar sesión en Git
 
 «Enviada» indica que el cliente envió la respuesta; «Ronda finalizada» indica que se observó el cierre. Estos estados no confirman una victoria. El tiempo real incluye cola, cálculo y espera desde recibir el reto completo; no incluye el viaje de red ni el procesamiento del servidor. Al pausar las respuestas no registra retos nuevos. Al cerrar Minecraft se borra el historial.
 
-**Perfiles.** Guardan tiempos generales y propios, juegos activos, HUD, avisos y ajustes del contador. Usa nombres de 1 a 24 letras minúsculas, números, `_` o `-`, hasta un máximo de 32 perfiles. Puedes ver sus ajustes antes de aplicarlos. La carga cancela respuestas pendientes y conserva la pausa general. «Deshacer carga» restaura el estado anterior, incluso tras reiniciar, y permite alternar entre los dos últimos estados.
+**Perfiles.** Guardan tiempos generales, por categoría y por dificultad, juegos activos, HUD, avisos y ajustes del contador. Usa nombres de 1 a 24 letras minúsculas, números, `_` o `-`, hasta un máximo de 32 perfiles. Puedes ver sus ajustes antes de aplicarlos. La carga cancela respuestas pendientes y conserva la pausa general. «Deshacer carga» restaura el estado anterior, incluso tras reiniciar, y permite alternar entre los dos últimos estados.
 
 Guardar nuevo conserva los perfiles existentes. Eliminar pide confirmación. Los perfiles se guardan en `config/chatgames-universal-helper/profiles/` y excluyen IA, claves, rutas de logs, diagnóstico y diccionarios. La escritura de configuración y perfiles utiliza archivos temporales y sustitución; un fallo de carga restaura los valores anteriores en memoria.
 
@@ -150,13 +150,33 @@ Guardar nuevo conserva los perfiles existentes. Eliminar pide confirmación. Los
 
 ### Tu intervalo, con precisión decimal
 
-Elige **tiempo fijo**, **intervalo aleatorio** o **heredar el tiempo general**. Usa `2.1` o `2,1`, ajusta con **−0.1 / +0.1 s** y guarda un rango como **2.1–2.9 s**. Cada minijuego admite de **0 a 60 segundos**.
+En **G → Juegos → elige una categoría** encontrarás cuatro ajustes independientes:
+
+| Ajuste | Cuándo se usa |
+| --- | --- |
+| **Tiempo base** | Retos sin dificultad anunciada y niveles que usan la base. |
+| **Fácil** | El servidor anuncia `(Fácil)`. |
+| **Media (Normal)** | El servidor anuncia `(Normal)`. |
+| **Difícil (Experto)** | El servidor anuncia `(Experto)`. |
+
+Cada nivel admite **tiempo fijo**, **intervalo aleatorio** o **usar tiempo base**. La base puede heredar el tiempo general. Usa `2.1` o `2,1`, ajusta con **−0.1 / +0.1 s** y guarda rangos de **0 a 60 segundos**. Matemáticas y Trivia tienen valores separados, al igual que las otras ocho categorías.
+
+El nivel se toma del anuncio del servidor: no se deduce de la longitud de la operación. Al actualizar, los niveles usan tus tiempos anteriores hasta que guardes un valor propio.
 
 ```text
-/cgedit settime trivia random 2.1 2.9
-/cgedit settime math 2.7
-/cgedit settime reaction 0s
+/cgedit settime math easy random 2.1 2.9
+/cgedit settime math normal random 5 8
+/cgedit settime math expert random 20 30
+/cgedit settime trivia expert 7.5
+/cgedit settime math expert default
 ```
+
+Los números son ejemplos de configuración. `default` elimina solo el intervalo propio del nivel indicado. Consulta los tres niveles con `/cgedit settime math`. Los comandos aceptan también `facil`, `media`, `medio`, `experto` y `dificil`.
+
+<p align="center">
+  <a href="docs/images/difficulty-140.png"><img src="docs/images/difficulty-140.png" alt="Matemáticas: tiempo base, Fácil con 2.1–2.9 s, Media usando la base y Experto con 20.1–30 s" width="900" /></a><br />
+  <sub>Pantalla de 1.4.0 en el cliente de desarrollo. Los valores mostrados son ejemplos guardados durante la comprobación.</sub>
+</p>
 
 El tiempo cuenta desde la recepción del **reto completo**, incluyendo cola y cálculo local. Si el cálculo supera el intervalo, la respuesta sale al estar lista. La conexión y el servidor pueden afectar al tiempo que anuncian.
 
@@ -164,9 +184,9 @@ El tiempo cuenta desde la recepción del **reto completo**, incluyendo cola y c�
 <summary><strong>Más sobre tiempos, herencia y cancelación</strong></summary>
 
 - También acepta milisegundos, como `500ms`, y valores decimales con coma.
-- El editor incluye tiempos fijos de 0, 1, 2, 3 y 5 s, y rangos de 0–1, 2.1–2.9 y 3–5 s.
+- El editor incluye tiempos fijos de 0, 1, 2, 3 y 5 s, y rangos de 0–1, 2.1–2.9 y 3–5 s. En Experto, el último acceso rápido es 20–30 s; solo se aplica al pulsar Guardar.
 - Guardar aplica el cambio. Cancelar o Escape descarta la edición.
-- Cambiar el tiempo general conserva los intervalos propios. `settime math default` vuelve a heredar el general.
+- La prioridad es **nivel propio → base del minijuego → general**. Cambiar una base conserva sus niveles propios. `settime math default` vuelve a heredar el general sin borrar los niveles; `settime math expert default` hace que solo Experto use la base.
 - Editar un intervalo afecta a los próximos envíos; los ya programados conservan su tiempo. Pausar o cargar un perfil cancela los pendientes.
 - Chat en vivo y registro se deduplican. Se eliminó la antigua espera de 350 ms o hasta 3 s para agrupar mensajes. Un reto partido espera el texto necesario para resolverlo.
 - Para el tipo RANDOM: `settime random 2s` fija su tiempo; `settime random random 0s 1s` configura su rango; `settime random 0s 1s` configura el rango general.
@@ -187,7 +207,7 @@ Se revisaron 14 rondas en los dos archivos: 10 ya estaban incorporadas y 4 corre
 
 ## 🆕 Compatible con el nuevo sistema de Infection
 
-La versión **1.3.1** reconoce los niveles **Fácil, Normal y Experto** y el nuevo anuncio de resultado. El nivel aparece en el HUD, el historial y los comandos `last` e `history`. Los tiempos se configuran por tipo de juego y se aplican también a Experto.
+Desde **1.3.1** se reconocen los niveles **Fácil, Normal y Experto** y el nuevo anuncio de resultado. El nivel aparece en el HUD, el historial y los comandos `last` e `history`. En **1.4.0** cada nivel dispone de su propio tiempo dentro de cada tipo de juego.
 
 ```text
 ✯ MINIJUEGO ✯
@@ -232,6 +252,7 @@ La ayuda de `/cgedit help 1` a `/cgedit help 4` tiene autocompletado y comandos 
 | `/cgedit pause` · `/cgedit resume` | Pausa o reanuda las respuestas. También acepta `off` y `on`. |
 | `/cgedit game trivia on` | Activa un tipo. Usa `off` para pausarlo. |
 | `/cgedit settime trivia random 2.1 2.9` | Define un intervalo propio. |
+| `/cgedit settime math expert random 20s 30s` | Define un intervalo para Matemáticas · Difícil (Experto). |
 | `/cgedit history 1` · `/cgedit report` | Historial paginado y resumen de la sesión. |
 | `/cgedit profile save infection` | Guarda tus ajustes en un perfil nuevo. |
 | `/cgedit profile load infection` | Carga el perfil y cancela envíos pendientes. |
@@ -249,6 +270,7 @@ La ayuda de `/cgedit help 1` a `/cgedit help 4` tiene autocompletado y comandos 
 | `/cgedit settime 0s` | Tiempo general sin espera añadida. |
 | `/cgedit settime random 0s 1s` | Intervalo general de 0–1 s. |
 | `/cgedit settime math default` | Hace que matemáticas herede el tiempo general. |
+| `/cgedit settime math expert default` | Hace que solo Experto herede la base de Matemáticas. |
 | `/cgedit profile list` | Lista los perfiles. |
 | `/cgedit profile show infection` | Consulta sus valores. |
 | `/cgedit profile undo` | Restaura la configuración anterior a la carga. |
@@ -272,7 +294,9 @@ La ayuda de `/cgedit help 1` a `/cgedit help 4` tiene autocompletado y comandos 
 
 ## 🧪 Comprobado con retos reales de los registros
 
-**103 pruebas JUnit aprobadas en 1.3.2.** Incluyen las 328 rondas de octubre, las 26 de la actualización anterior y las 14 de los logs del 23 y 24 de noviembre, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias. Las diez rondas del día 23 ya estaban en el corpus anterior.
+**111 pruebas JUnit aprobadas en 1.4.0.** Incluyen las 328 rondas de octubre, las 26 de la actualización anterior y las 14 de los logs del 23 y 24 de noviembre, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias. Las diez rondas del día 23 ya estaban en el corpus anterior. Los ocho casos nuevos verifican los niveles de las diez categorías, herencia, decimales, guardado, comandos, perfiles y selección de tiempos con anuncios reales.
+
+La GUI de 1.4.0 se comprobó en Minecraft 26.2: apertura con G, tiempos independientes por nivel, guardado decimal, cancelación y separación de Matemáticas y Trivia. Esta comprobación se hizo en un mundo local.
 
 El ejemplo Experto se reprodujo en un mundo local de Minecraft 26.2: respuesta **589**, espera elegida de **631 ms**, un envío a los **636 ms** y cierre con el nuevo formato. La conexión al servidor remoto Infection no formó parte de esta comprobación.
 
@@ -281,7 +305,7 @@ El ejemplo Experto se reprodujo en un mundo local de Minecraft 26.2: respuesta *
 <details>
 <summary><strong>Compatibilidad y datos locales</strong></summary>
 
-La actualización mantiene las preferencias de 1.2.5, 1.3.0 y 1.3.1: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
+La actualización mantiene las preferencias de 1.2.5 a 1.3.2: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los perfiles anteriores usan sus tiempos base en los tres niveles. El nombre visible y el JAR pasan a **ChatGames Infection Server**; el identificador interno y la carpeta de configuración se conservan para mantener la compatibilidad. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
 
 La configuración y los perfiles se guardan en `config/chatgames-universal-helper/`. El historial es temporal. No se distribuyen registros completos, conversaciones, configuraciones privadas ni mundos de pruebas.
 

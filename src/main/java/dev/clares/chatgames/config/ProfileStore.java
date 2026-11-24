@@ -9,6 +9,7 @@ public final class ProfileStore {
         public int format=1;
         public ModConfig.Delay delay;
         public Map<String,ModConfig.Delay> gameDelays;
+        public Map<String,Map<String,ModConfig.Delay>> difficultyDelays=new LinkedHashMap<>();
         public Map<String,Boolean> games;
         public ModConfig.Countdown countdown;
         public boolean hud,stats;
@@ -53,6 +54,15 @@ public final class ProfileStore {
         if(!allowed.containsAll(p.games.keySet())||!allowed.containsAll(p.gameDelays.keySet())||p.games.containsValue(null))
             throw new IllegalArgumentException("El perfil contiene un juego inválido.");
         p.gameDelays.values().forEach(ProfileStore::delay);
+        if(p.difficultyDelays==null)p.difficultyDelays=new LinkedHashMap<>();
+        if(!allowed.containsAll(p.difficultyDelays.keySet()))throw new IllegalArgumentException("Juego inválido en tiempos por dificultad.");
+        p.difficultyDelays.values().forEach(levels->{
+            if(levels==null)throw new IllegalArgumentException("Tiempos por dificultad inválidos.");
+            levels.forEach((level,d)->{
+                if(dev.clares.chatgames.game.GameDifficulty.parse(level).map(v->!v.key().equals(level)).orElse(true))throw new IllegalArgumentException("Dificultad inválida en el perfil.");
+                delay(d);
+            });
+        });
         var c=p.countdown;
         if(c.intervalMinutes<0||c.intervalMinutes>1440||c.intervalSeconds<0||c.intervalSeconds>59||c.totalSeconds()<1||c.totalSeconds()>86400||!Float.isFinite(c.volume)||c.volume<0||c.volume>1)
             throw new IllegalArgumentException("El perfil contiene un contador inválido.");
@@ -60,6 +70,7 @@ public final class ProfileStore {
     private Profile capture() {
         ModConfig c=settings.get();Profile p=new Profile();p.delay=c.delayFor("");
         p.gameDelays=new LinkedHashMap<>();synchronized(c.gameDelays){c.gameDelays.forEach((k,v)->p.gameDelays.put(k,v.copy()));}
+        p.difficultyDelays=c.copyDifficultyDelays();
         synchronized(c.games){p.games=new LinkedHashMap<>(c.games);}
         p.countdown=ConfigManager.GSON.fromJson(ConfigManager.GSON.toJson(c.countdown),ModConfig.Countdown.class);
         p.hud=c.hud;p.stats=c.stats;return p;
@@ -67,6 +78,7 @@ public final class ProfileStore {
     private void install(Profile p) {
         ModConfig c=settings.get();
         synchronized(c){c.delay=p.delay.copy();c.gameDelays.clear();p.gameDelays.forEach((k,v)->c.gameDelays.put(k,v.copy()));
+            c.difficultyDelays.clear();p.difficultyDelays.forEach((game,levels)->levels.forEach((level,d)->c.setDifficultyDelay(game,level,d)));
             c.games.clear();c.games.putAll(p.games);c.countdown=p.countdown;c.hud=p.hud;c.stats=p.stats;}
     }
     /** Called while the manager holds its response lock, after invalidating old sends. */

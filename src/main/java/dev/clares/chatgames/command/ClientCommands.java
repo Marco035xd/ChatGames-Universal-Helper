@@ -64,6 +64,7 @@ public final class ClientCommands {
             case "save" -> {store.saveNew(p[2]);say.accept("Perfil guardado: "+p[2]);}
             case "show" -> {var profile=store.read(p[2]);say.accept("Perfil "+p[2]+" · General: "+dev.clares.chatgames.gui.TimeDraft.describe(profile.delay));
                 for(var type:GameType.values()){String key=type.name().toLowerCase(Locale.ROOT);if(profile.games.containsKey(key)||profile.gameDelays.containsKey(key))say.accept(dev.clares.chatgames.gui.GameCatalog.title(type)+": "+(profile.games.getOrDefault(key,false)?"activo":"pausado")+" · "+dev.clares.chatgames.gui.TimeDraft.describe(profile.gameDelays.getOrDefault(key,profile.delay)));}
+                profile.difficultyDelays.forEach((game,levels)->levels.forEach((level,d)->say.accept(game+" · "+GameDifficulty.parse(level).orElseThrow().label()+": "+dev.clares.chatgames.gui.TimeDraft.describe(d))));
                 say.accept("Contador: "+CountdownClock.formatTime(profile.countdown.totalSeconds())+" · HUD: "+(profile.hud?"sí":"no")+" · Avisos: "+(profile.stats?"sí":"no"));}
             case "load" -> {games.applyProfile(p[2]);say.accept("Perfil aplicado: "+p[2]+". Pendientes cancelados. Deshacer: /cgedit profile undo");}
             case "undo" -> {games.applyProfile(null);say.accept("Configuración anterior restaurada.");}
@@ -73,7 +74,7 @@ public final class ClientCommands {
     }
     private void showHelp(int number) {
         HelpPages.Page page=HelpPages.page(number);
-        styled.accept(Component.literal("ChatGames · "+page.title()+" · "+number+"/"+HelpPages.count()).withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
+        styled.accept(Component.literal("ChatGames Infection Server · "+page.title()+" · "+number+"/"+HelpPages.count()).withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
         for (HelpPages.Entry entry:page.entries()) {
             styled.accept(Component.literal(entry.command()).withStyle(ChatFormatting.AQUA)
                 .withStyle(style->style.withClickEvent(new net.minecraft.network.chat.ClickEvent.SuggestCommand(entry.command().split(" · ")[0]))

@@ -38,6 +38,16 @@ public final class ConfigManager {
             if(!Float.isFinite(config.countdown.volume))config.countdown.volume=0.6f;
             config.countdown.volume=Math.max(0,Math.min(1,config.countdown.volume));
             if(config.gameDelays==null)config.gameDelays=new LinkedHashMap<>();
+            // Additive preferences: preserve every existing category interval and paused state.
+            Map<String,Map<String,ModConfig.Delay>> levels=new LinkedHashMap<>();
+            if(config.difficultyDelays!=null)config.difficultyDelays.forEach((game,values)->{
+                if(values==null||java.util.Arrays.stream(dev.clares.chatgames.game.GameType.values()).noneMatch(t->t!=dev.clares.chatgames.game.GameType.UNKNOWN&&t.name().equalsIgnoreCase(game)))return;
+                values.forEach((level,d)->dev.clares.chatgames.game.GameDifficulty.parse(level).ifPresent(difficulty->{
+                    if(d!=null&&("fixed".equals(d.mode)||"random".equals(d.mode))&&d.minMs>=0&&d.maxMs>=d.minMs&&d.maxMs<=60000)
+                        levels.computeIfAbsent(game.toLowerCase(java.util.Locale.ROOT),k->new LinkedHashMap<>()).put(difficulty.key(),d.copy());
+                }));
+            });
+            config.difficultyDelays=levels;
             config.games=Collections.synchronizedMap(new LinkedHashMap<>(config.games));
             config.gameDelays=Collections.synchronizedMap(new LinkedHashMap<>(config.gameDelays));
             boolean update=config.configRevision<7;

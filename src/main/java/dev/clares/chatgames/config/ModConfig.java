@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
+import dev.clares.chatgames.game.GameDifficulty;
 
 public final class ModConfig {
     public int configRevision = 0;
@@ -14,6 +15,7 @@ public final class ModConfig {
     public String logPath = "auto";
     public Delay delay = new Delay();
     public Map<String, Delay> gameDelays = new LinkedHashMap<>();
+    public Map<String,Map<String,Delay>> difficultyDelays = new LinkedHashMap<>();
     public Map<String, Boolean> games = new LinkedHashMap<>();
     public Ai ai = new Ai();
     public volatile Countdown countdown = new Countdown();
@@ -26,6 +28,25 @@ public final class ModConfig {
     public synchronized Delay delayFor(String type) {
         Delay chosen=gameDelays.get(type.toLowerCase(Locale.ROOT));
         return (chosen==null?delay:chosen).copy();
+    }
+    public synchronized Delay delayFor(String type,String difficulty) {
+        String key=GameDifficulty.parse(difficulty).map(GameDifficulty::key).orElse("");
+        Delay chosen=difficultyDelays.getOrDefault(type.toLowerCase(Locale.ROOT),Map.of()).get(key);
+        return chosen==null?delayFor(type):chosen.copy();
+    }
+    public synchronized boolean hasDifficultyDelay(String type,String difficulty) {
+        return difficultyDelays.getOrDefault(type.toLowerCase(Locale.ROOT),Map.of()).containsKey(difficulty);
+    }
+    public synchronized void setDifficultyDelay(String type,String difficulty,Delay value) {
+        String key=GameDifficulty.parse(difficulty).orElseThrow(()->new IllegalArgumentException("Dificultad inválida.")).key();
+        String game=type.toLowerCase(Locale.ROOT);
+        if(value==null){var levels=difficultyDelays.get(game);if(levels!=null){levels.remove(key);if(levels.isEmpty())difficultyDelays.remove(game);}}
+        else difficultyDelays.computeIfAbsent(game,k->new LinkedHashMap<>()).put(key,value.copy());
+    }
+    public synchronized Map<String,Map<String,Delay>> copyDifficultyDelays() {
+        Map<String,Map<String,Delay>> result=new LinkedHashMap<>();
+        difficultyDelays.forEach((game,levels)->{Map<String,Delay> copy=new LinkedHashMap<>();levels.forEach((level,d)->copy.put(level,d.copy()));result.put(game,copy);});
+        return result;
     }
     public synchronized void setDelay(String type,Delay value) {
         if(type.isEmpty())delay=value;

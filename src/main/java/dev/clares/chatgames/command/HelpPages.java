@@ -20,8 +20,8 @@ public final class HelpPages {
             new Entry("/cgedit settime 0s", "Sin espera añadida. Acepta decimales: 2.1s o 2,1s, y milisegundos: 500ms."),
             new Entry("/cgedit settime random 0s 1s", "Responde con una espera de 0 a 1 segundo; intervalo inicial de esta versión."),
             new Entry("/cgedit settime math random 2.1s 2.9s", "Configura MATH entre 2.1 y 2.9 segundos. Puedes sustituir math por otro tipo y usar coma decimal."),
-            new Entry("/cgedit settime variable random 3s 5s", "Configura las ecuaciones con letras o símbolos entre 3 y 5 segundos."),
-            new Entry("/cgedit settime <tipo> default", "Hace que ese modo use el tiempo general. Un tiempo propio se guarda al reiniciar.")
+            new Entry("/cgedit settime math expert random 20s 30s", "Tiempo propio de Difícil/Experto. Usa easy, normal o expert con cualquier tipo, también trivia. Admite decimales."),
+            new Entry("/cgedit settime <tipo> [nivel] default", "Sin nivel: hereda el general. Con nivel: vuelve a la base del juego. La GUI permite editar los tres niveles.")
         )),
         new Page("Pruebas y diagnóstico", List.of(
             new Entry("/cgedit test <tipo> <texto>", "Prueba una solución local sin enviarla al servidor. Ejemplo: test unscramble uMics icsD"),

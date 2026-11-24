@@ -1,3 +1,14 @@
+# 1.4.0 — ChatGames Infection Server y tiempos por dificultad
+
+- Nuevo nombre visible: **ChatGames Infection Server**, en el panel, controles, ayuda, metadatos y README. El JAR se llama `chatgames-infection-server-1.4.0.jar`; se conserva el identificador interno y la configuración existente.
+- Cada una de las diez categorías tiene un editor de **Tiempo base**, **Fácil**, **Media (Normal)** y **Difícil (Experto)**. Cada nivel admite tiempo fijo, intervalo aleatorio decimal o heredar su base.
+- Selección por la dificultad anunciada por el servidor. La prioridad es nivel propio → base de la categoría → general. Los retos sin nivel anunciado usan la base.
+- Comandos y autocompletado por nivel: `/cgedit settime math expert random 20s 30s`, consultas y `default` independiente. Se mantiene la sintaxis anterior y se aceptan alias españoles.
+- Perfiles y deshacer incluyen los nuevos intervalos; los perfiles anteriores siguen usando sus tiempos base. Los fallos de guardado restauran los intervalos anteriores.
+- Los tiempos anteriores, juegos pausados, contador, respuestas y preferencias personales se conservan. Abrir o cancelar un editor no aplica cambios. Los envíos ya programados mantienen su primer intervalo.
+- No se añade espera de agrupación: el intervalo sigue contando desde recibir el reto completo, incluyendo cola y cálculo local.
+- 111 pruebas JUnit aprobadas. Verificación visual en Minecraft 26.2 de guardado decimal, cancelación y niveles independientes de Matemáticas y Trivia.
+
 # 1.3.2 — Trivia del 24 de noviembre y logo
 
 - Añade tres preguntas confirmadas por el servidor: Tratado de Tordesillas → 1494; metal líquido → Mercurio; transporte fiable y ordenado → TCP.

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "chatgames_universal_helper",
   "version": "${version}",
-  "name": "ChatGames Universal Helper",
-  "description": "Client-side chat challenge helper with log tailing and rich text inspection.",
+  "name": "ChatGames Infection Server",
+  "description": "Centro de control de ChatGames con tiempos por categoría y dificultad, perfiles, historial y contador.",
   "authors": [
     "Clares"
   ],

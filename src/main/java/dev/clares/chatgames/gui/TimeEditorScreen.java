@@ -8,7 +8,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 public final class TimeEditorScreen extends Screen {
-    private final ChatGamesScreen parent;
+    private final Screen parent;
+    private final Runnable onSaved;
     private final ConfigManager settings;
     private final TimeDraft draft;
     private final String gameTitle;
@@ -19,12 +20,19 @@ public final class TimeEditorScreen extends Screen {
     private int x,y,w;
     private String failure="";
     public TimeEditorScreen(ChatGamesScreen parent,ConfigManager settings,GameCatalog.Entry entry) {
-        super(Component.literal("Tiempo de respuesta"));this.parent=parent;this.settings=settings;
-        gameTitle=entry==null?"Tiempo general":entry.title();draft=new TimeDraft(settings,entry==null?"":entry.key());
+        this(parent,settings,entry,"",()->parent.saved(entry==null?"Tiempo general":entry.title()));
+    }
+    public TimeEditorScreen(DifficultySettingsScreen parent,ConfigManager settings,GameCatalog.Entry entry,String difficulty) {
+        this(parent,settings,entry,difficulty,()->parent.saved(entry.title()+(difficulty.isEmpty()?" · base":" · "+dev.clares.chatgames.game.GameDifficulty.parse(difficulty).orElseThrow().label())));
+    }
+    private TimeEditorScreen(Screen parent,ConfigManager settings,GameCatalog.Entry entry,String difficulty,Runnable onSaved) {
+        super(Component.literal("Tiempo de respuesta"));this.parent=parent;this.settings=settings;this.onSaved=onSaved;
+        gameTitle=(entry==null?"Tiempo general":entry.title())+(difficulty.isEmpty()?"":" · "+dev.clares.chatgames.game.GameDifficulty.parse(difficulty).orElseThrow().label());
+        draft=new TimeDraft(settings,entry==null?"":entry.key(),difficulty);
     }
     @Override protected void init() {
         w=Math.min(440,width-24);x=(width-w)/2;y=Math.max(1,(height-PANEL_HEIGHT)/2);int inner=w-24,field=(inner-12)/2;
-        mode=button("",x+12,y+40,inner,20,()->{draft.nextMode();refresh();},"Fijo: por ejemplo 2.1 s. Aleatorio: por ejemplo de 2.1 a 2.9 s. General: hereda el intervalo común.");
+        mode=button("",x+12,y+40,inner,20,()->{draft.nextMode();refresh();},"Fijo o intervalo aleatorio. Heredar: usa el tiempo base del minijuego para este nivel, o el general para el tiempo base.");
         minimum=addRenderableWidget(new EditBox(font,x+12,y+80,field,20,Component.literal("Tiempo mínimo en segundos")));
         maximum=addRenderableWidget(new EditBox(font,x+24+field,y+80,field,20,Component.literal("Tiempo máximo en segundos")));
         minimum.setMaxLength(12);maximum.setMaxLength(12);minimum.setTextColorUneditable(0xFF7A8B9A);maximum.setTextColorUneditable(0xFF7A8B9A);
@@ -46,10 +54,11 @@ public final class TimeEditorScreen extends Screen {
         int rangeW=(inner-8)/3;
         button("0–1 s",x+12,y+162,rangeW,18,()->preset(0,1000),"Intervalo aleatorio de 0 a 1 segundo. Pulsa Guardar para aplicarlo.");
         button("2.1–2.9 s",x+16+rangeW,y+162,rangeW,18,()->preset(2100,2900),"Intervalo aleatorio entre 2.1 y 2.9 segundos para este minijuego. Puedes editar ambos límites.");
-        button("3–5 s",x+20+rangeW*2,y+162,rangeW,18,()->preset(3000,5000),"Intervalo aleatorio de 3 a 5 segundos. Pulsa Guardar para aplicarlo.");
+        if(draft.difficulty.equals("expert"))button("20–30 s",x+20+rangeW*2,y+162,rangeW,18,()->preset(20000,30000),"Intervalo aleatorio de 20 a 30 segundos solo para este nivel. Debes guardar para aplicarlo.");
+        else button("3–5 s",x+20+rangeW*2,y+162,rangeW,18,()->preset(3000,5000),"Intervalo aleatorio de 3 a 5 segundos. Pulsa Guardar para aplicarlo.");
         button("Cancelar",x+12,y+210,inner/2-4,20,this::onClose,"Vuelve sin guardar este intervalo.");
         save=button("Guardar cambios",x+12+inner/2+4,y+210,inner/2-4,20,()->{
-            try{draft.save();parent.saved(gameTitle);minecraft.gui.setScreen(parent);}
+            try{draft.save();onSaved.run();minecraft.gui.setScreen(parent);}
             catch(IllegalArgumentException e){failure=e.getMessage();refresh();}
             catch(RuntimeException e){failure="No se pudo guardar. Puedes volver a intentarlo.";refresh();}
         },"Guarda el intervalo en tu configuración. Se conserva después de reiniciar Minecraft.");
@@ -66,7 +75,7 @@ public final class TimeEditorScreen extends Screen {
     }
     private void refresh() {
         if(mode==null||minimum==null||maximum==null)return;
-        mode.setMessage(Component.literal(switch(draft.mode){case FIXED->"Modo: tiempo fijo";case RANDOM->"Modo: intervalo aleatorio";case INHERIT->"Modo: usar tiempo general";}));
+        mode.setMessage(Component.literal(switch(draft.mode){case FIXED->"Modo: tiempo fijo";case RANDOM->"Modo: intervalo aleatorio";case INHERIT->draft.difficulty.isEmpty()?"Modo: usar tiempo general":"Modo: usar tiempo base";}));
         minimum.setEditable(draft.mode!=TimeDraft.Mode.INHERIT);minimum.active=draft.mode!=TimeDraft.Mode.INHERIT;
         maximum.setEditable(draft.mode==TimeDraft.Mode.RANDOM);maximum.active=draft.mode==TimeDraft.Mode.RANDOM;
         if(minimumDown!=null)minimumDown.active=minimumUp.active=draft.mode!=TimeDraft.Mode.INHERIT;
@@ -84,7 +93,7 @@ public final class TimeEditorScreen extends Screen {
         c.text(font,draft.mode==TimeDraft.Mode.FIXED?"No se usa":"Máximo (s)",x+24+(w-36)/2,y+68,draft.mode==TimeDraft.Mode.RANDOM?GuiTheme.TEXT:GuiTheme.MUTED);
         c.text(font,"Opciones rápidas",x+12,y+128,GuiTheme.MUTED);
         String error=draft.error();String message=!failure.isEmpty()?failure:!error.isEmpty()?error:
-            draft.mode==TimeDraft.Mode.INHERIT?"General actual: "+TimeDraft.describe(settings.get().delayFor("")):"0 s = envío en cuanto la respuesta esté lista.";
+            draft.mode==TimeDraft.Mode.INHERIT?(draft.difficulty.isEmpty()?"General actual: "+TimeDraft.describe(settings.get().delayFor("")):"Base actual: "+TimeDraft.describe(settings.get().delayFor(draft.key))):"0 s = envío en cuanto la respuesta esté lista.";
         GuiTheme.fit(c,font,message,x+12,y+190,w-24,!failure.isEmpty()||!error.isEmpty()?GuiTheme.RED:GuiTheme.GREEN);
         super.extractRenderState(c,mx,my,delta);
     }

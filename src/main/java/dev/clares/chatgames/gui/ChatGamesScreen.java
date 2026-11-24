@@ -34,7 +34,7 @@ public final class ChatGamesScreen extends Screen {
     private static final GameType[] PRACTICE={GameType.MATH,GameType.VARIABLE,GameType.TRIVIA,GameType.UNSCRAMBLE,GameType.FILLOUT,GameType.UNREVERSE,GameType.REACTION};
     private static final String[] EXAMPLES={"6 * 7","3*x + 4 = 19","¿Cuál es la capital de Alemania?","aotP","_abbi_","ssalgypS","Hola"};
     public ChatGamesScreen(ConfigManager settings,GameManager games,Screen parent,CountdownClock countdown) {
-        super(Component.literal("ChatGames · Centro de control"));this.countdown=countdown;this.settings=settings;this.games=games;this.parent=parent;
+        super(Component.literal("ChatGames Infection Server · Centro de control"));this.countdown=countdown;this.settings=settings;this.games=games;this.parent=parent;
     }
     @Override protected void init() {
         layout=DashboardLayout.of(width,height);
@@ -70,8 +70,11 @@ public final class ChatGamesScreen extends Screen {
         var entries=GameFilter.find(settings.get(),query,filter);int size=layout.pageSize();page=Math.min(page,Math.max(0,(entries.size()-1)/size));
         for(int i=page*size;i<Math.min(entries.size(),(page+1)*size);i++) {
             var e=entries.get(i);int slot=i-page*size,cx=layout.cardX(slot),cy=layout.cardY(slot),cw=layout.cardWidth();
-            var card=addRenderableWidget(new GameCard(cx,cy,cw,e,TimeDraft.describe(settings.get().delayFor(e.key())),settings.get().gameDelays.containsKey(e.key())?"Propio":"General",b->minecraft.gui.setScreen(new TimeEditorScreen(this,settings,e))));
-            card.setTooltip(Tooltip.create(Component.literal(e.title()+"\n\n"+e.description()+"\n"+e.detail()+"\n\nClic: editar el intervalo.\n"+(settings.get().enabled?"":"Respuestas en pausa general."))));
+            boolean levels=settings.get().difficultyDelays.containsKey(e.key());
+            var card=addRenderableWidget(new GameCard(cx,cy,cw,e,(levels?"Base: ":"")+TimeDraft.describe(settings.get().delayFor(e.key())),levels?"Por nivel":settings.get().gameDelays.containsKey(e.key())?"Propio":"General",b->minecraft.gui.setScreen(new DifficultySettingsScreen(this,settings,e))));
+            StringBuilder times=new StringBuilder();
+            for(var level:dev.clares.chatgames.game.GameDifficulty.values())times.append("\n").append(level.label()).append(": ").append(TimeDraft.describe(settings.get().delayFor(e.key(),level.key())));
+            card.setTooltip(Tooltip.create(Component.literal(e.title()+"\n\n"+e.description()+"\n"+e.detail()+"\n"+times+"\n\nClic: editar tiempo base, Fácil, Media y Difícil.\n"+(settings.get().enabled?"":"Respuestas en pausa general."))));
             button(settings.get().game(e.key())?"Activo":"Pausado",cx+cw-58,cy+34,58,18,()->{
                 games.setGameEnabled(e.type(),!settings.get().game(e.key()));notice=e.title()+": estado guardado.";rebuildWidgets();
             },"Activar o pausar "+e.title()+". Pausar cancela su envío pendiente.");
@@ -105,6 +108,7 @@ public final class ChatGamesScreen extends Screen {
         if(profile!=null)button("Ver ajustes: "+selectedProfile,right,y+100,left,16,()->{
             var details=new ArrayList<String>();details.add("General: "+TimeDraft.describe(profile.delay));
             for(var type:GameType.values()){String key=type.name().toLowerCase(Locale.ROOT);if(profile.games.containsKey(key)||profile.gameDelays.containsKey(key))details.add(title(type)+": "+(profile.games.getOrDefault(key,false)?"activo":"pausado")+" · "+TimeDraft.describe(profile.gameDelays.getOrDefault(key,profile.delay)));}
+            profile.difficultyDelays.forEach((game,levels)->levels.forEach((level,d)->details.add(game+" · "+GameDifficulty.parse(level).orElseThrow().label()+": "+TimeDraft.describe(d))));
             details.add("Contador: "+CountdownClock.formatTime(profile.countdown.totalSeconds())+" · "+(profile.countdown.enabled?"activado":"apagado"));
             details.add("Notas: "+(profile.countdown.sound?"sí":"no")+" · Volumen: "+Math.round(profile.countdown.volume*100)+"%");
             details.add("Vista: "+(profile.countdown.fullTime?"permanente":"últimos 10 s"));
@@ -151,7 +155,7 @@ public final class ChatGamesScreen extends Screen {
         int w=layout.width()-24,x=layout.x()+12,y=layout.y();
         text(g,"CHATGAMES",12,10,w,GuiTheme.GOLD);
         String badge=settings.get().enabled?"ACTIVO":"EN PAUSA";g.text(font,badge,x+w-font.width(badge),y+10,settings.get().enabled?GuiTheme.GREEN:GuiTheme.RED);
-        text(g,"Centro de control · 1.3.2 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
+        text(g,"Infection Server · 1.4.0 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
         if(tab==0) {
             var s=games.history().summary();int mw=(w-12)/3;
             metric(g,x,y+74,mw,"Retos",Integer.toString(s.rounds()));metric(g,x+mw+6,y+74,mw,"Con envío",Integer.toString(s.answered()));metric(g,x+2*(mw+6),y+74,mw,"Media envío",seconds(s.averageMs()));
