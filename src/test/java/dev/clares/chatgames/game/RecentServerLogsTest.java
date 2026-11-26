@@ -5,7 +5,8 @@ import dev.clares.chatgames.chat.AnswerSender;
 import dev.clares.chatgames.config.*;
 import dev.clares.chatgames.solver.*;
 import net.minecraft.network.chat.Component;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.io.TempDir;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -14,22 +15,25 @@ import java.util.*;
 import java.util.concurrent.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ServerLog141Test {
+class RecentServerLogsTest {
     @TempDir Path temp;
     record Round(String sourceFile,int promptLine,int resultLine,String type,String question,String answer,
                  String difficulty,String prompt,String result) { }
-    private List<Round> rounds() throws Exception {
-        try(var reader=new InputStreamReader(getClass().getResourceAsStream("/server-rounds-141.json"),StandardCharsets.UTF_8)) {
+    private List<Round> rounds(String version) throws Exception {
+        try(var reader=new InputStreamReader(getClass().getResourceAsStream("/server-rounds-"+version+".json"),StandardCharsets.UTF_8)) {
             return ConfigManager.GSON.fromJson(reader,new TypeToken<List<Round>>(){}.getType());
         }
     }
-    @Test void bothNewLogsReproduce23CompleteRoundsWithConfirmedAnswersAndLevels() throws Exception {
-        var settings=new ConfigManager(temp);var trivia=new TriviaSolver(settings.dir());var corpus=rounds();
-        assertEquals(23,corpus.size());assertEquals(17,corpus.stream().filter(r->r.sourceFile.equals("2026-11-24-2.log.gz")).count());
-        assertEquals(6,corpus.stream().filter(r->r.sourceFile.equals("2026-11-24-3.log.gz")).count());
-        assertEquals(12,corpus.stream().filter(r->r.type.equals("trivia")).count());
-        assertEquals(11,corpus.stream().filter(r->r.type.equals("math")).count());
-        assertEquals(4,corpus.stream().filter(r->r.difficulty.equals("Experto")).count());
+    @ParameterizedTest @ValueSource(strings={"141","142"})
+    void completeRoundsKeepTheirConfirmedAnswersAndLevels(String version) throws Exception {
+        var settings=new ConfigManager(temp);var trivia=new TriviaSolver(settings.dir());var corpus=rounds(version);
+        boolean november24=version.equals("141");
+        assertEquals(november24?23:7,corpus.size());
+        Map<String,Integer> expected=november24?Map.of("2026-11-24-2.log.gz",17,"2026-11-24-3.log.gz",6):Map.of("2026-11-25-2.log.gz",1,"2026-11-26-1.log.gz",6);
+        for(var entry:expected.entrySet())assertEquals(entry.getValue().longValue(),corpus.stream().filter(r->r.sourceFile.equals(entry.getKey())).count());
+        assertEquals(november24?12:4,corpus.stream().filter(r->r.type.equals("trivia")).count());
+        assertEquals(november24?11:3,corpus.stream().filter(r->r.type.equals("math")).count());
+        assertEquals(november24?4:1,corpus.stream().filter(r->r.difficulty.equals("Experto")).count());
         for(var r:corpus) {
             var d=GameDetector.detectComplete(r.prompt,true).orElseThrow(()->new AssertionError(r.sourceFile+":"+r.promptLine));
             assertEquals(r.question,d.question());assertEquals(r.type.toUpperCase(Locale.ROOT),d.type().name());
@@ -39,14 +43,15 @@ class ServerLog141Test {
         }
         assertTrue(trivia.answer("Plata").isEmpty(),"An orphan result must not create a question");
     }
-    @Test void newBankReachesExistingInstallationsWithoutChangingLevelTimesOrPersonalFiles() throws Exception {
+    @ParameterizedTest @ValueSource(strings={"141","142"})
+    void newBankReachesExistingInstallationsWithoutChangingLevelTimesOrPersonalFiles(String version) throws Exception {
         var settings=new ConfigManager(temp);var c=settings.get();c.enabled=false;c.games.put("trivia",false);
         c.setDelay("math",ModConfig.Delay.fixed(45000));c.setDelay("trivia",ModConfig.Delay.random(2700,2900));
         c.setDifficultyDelay("math","expert",ModConfig.Delay.random(20000,30000));
         c.setDifficultyDelay("trivia","normal",ModConfig.Delay.fixed(7500));
         c.countdown.intervalMinutes=12;c.countdown.intervalSeconds=9;c.countdown.sound=false;c.hud=false;c.stats=true;
         settings.save();new ProfileStore(settings).saveNew("niveles");
-        var added=rounds().stream().filter(r->r.type.equals("trivia")).toList();
+        var added=rounds(version).stream().filter(r->r.type.equals("trivia")).toList();
         Files.writeString(settings.dir().resolve("trivia.json"),ConfigManager.GSON.toJson(Map.of("Pregunta personal","Respuesta personal",added.getFirst().question,"Respuesta propia")));
         Files.writeString(settings.dir().resolve("trivia-cache.json"),"{\"Pregunta aprendida\":\"Aprendida\"}");
         Files.writeString(settings.dir().resolve("word-cache.json"),"{\"u:personal\":\"Personal\"}");
@@ -65,7 +70,8 @@ class ServerLog141Test {
         assertEquals(729,loaded.get().countdown.totalSeconds());assertFalse(loaded.get().countdown.sound);
         for(var entry:files.entrySet())assertEquals(entry.getValue(),Files.readString(entry.getKey()));
     }
-    @Test void liveAndLogCopiesUseTheirLevelIntervalAndServerResultsCancelPendingReplies() throws Exception {
+    @ParameterizedTest @ValueSource(strings={"141","142"})
+    void liveAndLogCopiesUseTheirLevelIntervalAndServerResultsCancelPendingReplies(String version) throws Exception {
         var settings=new ConfigManager(temp);settings.get().setDelay("",ModConfig.Delay.fixed(60000));
         for(String game:List.of("math","trivia"))for(var level:GameDifficulty.values())
             settings.get().setDifficultyDelay(game,level.key(),ModConfig.Delay.fixed(10000*(level.ordinal()+1)+(game.equals("trivia")?1000:0)));
@@ -75,13 +81,13 @@ class ServerLog141Test {
             public boolean clickCommand(String command){fail("Unexpected command");return false;}
         })) {
             int count=0;
-            for(var r:rounds()) {
+            for(var r:rounds(version)) {
                 for(String line:r.prompt.split("\\R"))manager.onRich(Component.literal(line));barrier(manager);
                 var session=manager.current();assertNotNull(session);assertEquals(r.answer,session.answer);assertEquals(r.difficulty,session.difficulty);
                 assertEquals(settings.get().delayFor(r.type,r.difficulty).minMs,session.responseDelayMs);
-                long deadline=session.scheduledSendTime,version=session.scheduleVersion;
+                long deadline=session.scheduledSendTime,scheduledVersion=session.scheduleVersion;
                 for(String line:r.prompt.split("\\R"))manager.onLog(line);barrier(manager);
-                assertSame(session,manager.current());assertEquals(deadline,session.scheduledSendTime);assertEquals(version,session.scheduleVersion);
+                assertSame(session,manager.current());assertEquals(deadline,session.scheduledSendTime);assertEquals(scheduledVersion,session.scheduleVersion);
                 manager.onRich(Component.literal(r.result));manager.onLog(r.result);barrier(manager);
                 assertNull(manager.current());var entry=manager.history().entries().getFirst();
                 assertEquals("Ronda finalizada",entry.status());assertEquals(r.answer,entry.confirmedAnswer());assertEquals(r.difficulty,entry.difficulty());

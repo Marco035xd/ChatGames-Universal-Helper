@@ -1,0 +1,93 @@
+[
+  {
+    "sourceFile": "2026-11-25-2.log.gz",
+    "promptLine": 390,
+    "resultLine": 397,
+    "time": "16:12:31",
+    "type": "trivia",
+    "question": "¿Cuántas ruedas tiene una bicicleta común?",
+    "answer": "2",
+    "difficulty": "Fácil",
+    "prompt": "✯ MINIJUEGO ✯\n(Fácil)\n¿Cuántas ruedas tiene una bicicleta común?\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió 2 en 2.3 s.",
+    "elapsed": 2.3
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 422,
+    "resultLine": 431,
+    "time": "09:32:00",
+    "type": "trivia",
+    "question": "¿En qué continente discurre el río Danubio?",
+    "answer": "Europa",
+    "difficulty": "Normal",
+    "prompt": "✯ MINIJUEGO ✯\n(Normal)\n¿En qué continente discurre el río Danubio?\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió Europa en 8.4 s.",
+    "elapsed": 8.4
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 515,
+    "resultLine": 522,
+    "time": "09:40:00",
+    "type": "math",
+    "question": "303 + 637",
+    "answer": "940",
+    "difficulty": "Normal",
+    "prompt": "✯ MINIJUEGO ✯\n(Normal)\nResuelve este problema: 303 + 637\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió 940 en 9.0 s.",
+    "elapsed": 9.0
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 656,
+    "resultLine": 665,
+    "time": "09:48:00",
+    "type": "math",
+    "question": "95 + 13",
+    "answer": "108",
+    "difficulty": "Fácil",
+    "prompt": "✯ MINIJUEGO ✯\n(Fácil)\nResuelve este problema: 95 + 13\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió 108 en 2.9 s.",
+    "elapsed": 2.9
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 759,
+    "resultLine": 765,
+    "time": "09:56:00",
+    "type": "trivia",
+    "question": "¿Qué animal parecido a un caballo tiene rayas blancas y negras?",
+    "answer": "Cebra",
+    "difficulty": "Fácil",
+    "prompt": "✯ MINIJUEGO ✯\n(Fácil)\n¿Qué animal parecido a un caballo tiene rayas blancas y negras?\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió Cebra en 4.6 s.",
+    "elapsed": 4.6
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 903,
+    "resultLine": 913,
+    "time": "10:04:00",
+    "type": "math",
+    "question": "1559 - 428",
+    "answer": "1131",
+    "difficulty": "Normal",
+    "prompt": "✯ MINIJUEGO ✯\n(Normal)\nResuelve este problema: 1559 - 428\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió 1131 en 7.4 s.",
+    "elapsed": 7.4
+  },
+  {
+    "sourceFile": "2026-11-26-1.log.gz",
+    "promptLine": 1053,
+    "resultLine": 1061,
+    "time": "10:12:00",
+    "type": "trivia",
+    "question": "¿Qué piedra con tres escrituras ayudó a descifrar los jeroglíficos egipcios?",
+    "answer": "Piedra de Rosetta",
+    "difficulty": "Experto",
+    "prompt": "✯ MINIJUEGO ✯\n(Experto)\n¿Qué piedra con tres escrituras ayudó a descifrar los jeroglíficos egipcios?\nTienes 60 segundos para responder.",
+    "result": "Jugador respondió Piedra de Rosetta en 20.2 s.",
+    "elapsed": 20.2
+  }
+]

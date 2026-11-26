@@ -1,3 +1,10 @@
+# 1.4.2 — Cuatro preguntas de los registros del 25 y 26 de noviembre
+
+- Añade cuatro preguntas con respuestas confirmadas: ruedas de una bicicleta común → 2; continente del Danubio → Europa; animal con rayas blancas y negras → Cebra; piedra con tres escrituras → Piedra de Rosetta. El banco incluido llega a 125 preguntas.
+- Revisa siete rondas completas en `2026-11-25-2.log.gz` y `2026-11-26-1.log.gz`: cuatro de Trivia y tres de Matemáticas. Los problemas matemáticos se resuelven con el motor existente.
+- Conserva tiempos por categoría y nivel, perfiles, juegos pausados, contador y respuestas personales. No cambia la revisión de configuración ni los solucionadores.
+- Reutiliza las pruebas de integración de los registros recientes para ambas muestras; 117 pruebas JUnit aprobadas.
+
 # 1.4.1 — Doce preguntas de los nuevos registros
 
 - Añade 12 preguntas de trivia con respuestas anunciadas por el servidor: Tritón, Merge sort, 6, Hercio, Ribosoma, Dijkstra, Raqueta, 7, Antoine de Saint-Exupéry, H2O, Júpiter y Oro. El banco incluido llega a 121 preguntas.
