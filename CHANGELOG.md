@@ -1,3 +1,10 @@
+# 1.4.3 — Ocho preguntas del segundo registro del 26 de noviembre
+
+- Añade ocho preguntas con respuestas confirmadas: mezcla azul y amarilla → Verde; ángulos de un dodecágono → 1800; capital de Brasil → Brasilia; capital de Ecuador → Quito; ángulos de un cuadrilátero → 360; satélite de la Tierra → Luna; lado opuesto al ángulo recto → Hipotenusa; figura equidistante del centro → Circunferencia. El banco llega a 133 preguntas.
+- Revisa 16 rondas completas: 11 de Trivia y 5 de Matemáticas. Tres preguntas de Trivia ya estaban incorporadas y no se duplican. Los cinco problemas matemáticos coinciden con el motor existente.
+- Conserva tiempos por categoría y nivel, perfiles, juegos pausados, contador y respuestas personales. No cambia la revisión de configuración ni los solucionadores.
+- Reutiliza las pruebas de integración para las tres muestras de registros recientes; 120 pruebas JUnit aprobadas.
+
 # 1.4.2 — Cuatro preguntas de los registros del 25 y 26 de noviembre
 
 - Añade cuatro preguntas con respuestas confirmadas: ruedas de una bicicleta común → 2; continente del Danubio → Europa; animal con rayas blancas y negras → Cebra; piedra con tres escrituras → Piedra de Rosetta. El banco incluido llega a 125 preguntas.

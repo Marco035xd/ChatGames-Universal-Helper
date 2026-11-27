@@ -155,7 +155,7 @@ public final class ChatGamesScreen extends Screen {
         int w=layout.width()-24,x=layout.x()+12,y=layout.y();
         text(g,"CHATGAMES",12,10,w,GuiTheme.GOLD);
         String badge=settings.get().enabled?"ACTIVO":"EN PAUSA";g.text(font,badge,x+w-font.width(badge),y+10,settings.get().enabled?GuiTheme.GREEN:GuiTheme.RED);
-        text(g,"Infection Server · 1.4.2 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
+        text(g,"Infection Server · 1.4.3 · "+TABS[tab],12,24,w,GuiTheme.MUTED);
         if(tab==0) {
             var s=games.history().summary();int mw=(w-12)/3;
             metric(g,x,y+74,mw,"Retos",Integer.toString(s.rounds()));metric(g,x+mw+6,y+74,mw,"Con envío",Integer.toString(s.answered()));metric(g,x+2*(mw+6),y+74,mw,"Media envío",seconds(s.averageMs()));

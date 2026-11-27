@@ -19,21 +19,29 @@ class RecentServerLogsTest {
     @TempDir Path temp;
     record Round(String sourceFile,int promptLine,int resultLine,String type,String question,String answer,
                  String difficulty,String prompt,String result) { }
+    record Expected(Map<String,Integer> files,int trivia,int math,int experts) { }
+    private Expected expected(String version) {
+        return switch(version) {
+            case "141" -> new Expected(Map.of("2026-11-24-2.log.gz",17,"2026-11-24-3.log.gz",6),12,11,4);
+            case "142" -> new Expected(Map.of("2026-11-25-2.log.gz",1,"2026-11-26-1.log.gz",6),4,3,1);
+            case "143" -> new Expected(Map.of("2026-11-26-2.log.gz",16),11,5,4);
+            default -> throw new IllegalArgumentException("Unknown corpus: "+version);
+        };
+    }
     private List<Round> rounds(String version) throws Exception {
         try(var reader=new InputStreamReader(getClass().getResourceAsStream("/server-rounds-"+version+".json"),StandardCharsets.UTF_8)) {
             return ConfigManager.GSON.fromJson(reader,new TypeToken<List<Round>>(){}.getType());
         }
     }
-    @ParameterizedTest @ValueSource(strings={"141","142"})
+    @ParameterizedTest @ValueSource(strings={"141","142","143"})
     void completeRoundsKeepTheirConfirmedAnswersAndLevels(String version) throws Exception {
         var settings=new ConfigManager(temp);var trivia=new TriviaSolver(settings.dir());var corpus=rounds(version);
-        boolean november24=version.equals("141");
-        assertEquals(november24?23:7,corpus.size());
-        Map<String,Integer> expected=november24?Map.of("2026-11-24-2.log.gz",17,"2026-11-24-3.log.gz",6):Map.of("2026-11-25-2.log.gz",1,"2026-11-26-1.log.gz",6);
-        for(var entry:expected.entrySet())assertEquals(entry.getValue().longValue(),corpus.stream().filter(r->r.sourceFile.equals(entry.getKey())).count());
-        assertEquals(november24?12:4,corpus.stream().filter(r->r.type.equals("trivia")).count());
-        assertEquals(november24?11:3,corpus.stream().filter(r->r.type.equals("math")).count());
-        assertEquals(november24?4:1,corpus.stream().filter(r->r.difficulty.equals("Experto")).count());
+        var expected=expected(version);
+        assertEquals(expected.files().values().stream().mapToInt(Integer::intValue).sum(),corpus.size());
+        for(var entry:expected.files().entrySet())assertEquals(entry.getValue().longValue(),corpus.stream().filter(r->r.sourceFile.equals(entry.getKey())).count());
+        assertEquals(expected.trivia(),corpus.stream().filter(r->r.type.equals("trivia")).count());
+        assertEquals(expected.math(),corpus.stream().filter(r->r.type.equals("math")).count());
+        assertEquals(expected.experts(),corpus.stream().filter(r->r.difficulty.equals("Experto")).count());
         for(var r:corpus) {
             var d=GameDetector.detectComplete(r.prompt,true).orElseThrow(()->new AssertionError(r.sourceFile+":"+r.promptLine));
             assertEquals(r.question,d.question());assertEquals(r.type.toUpperCase(Locale.ROOT),d.type().name());
@@ -43,7 +51,7 @@ class RecentServerLogsTest {
         }
         assertTrue(trivia.answer("Plata").isEmpty(),"An orphan result must not create a question");
     }
-    @ParameterizedTest @ValueSource(strings={"141","142"})
+    @ParameterizedTest @ValueSource(strings={"141","142","143"})
     void newBankReachesExistingInstallationsWithoutChangingLevelTimesOrPersonalFiles(String version) throws Exception {
         var settings=new ConfigManager(temp);var c=settings.get();c.enabled=false;c.games.put("trivia",false);
         c.setDelay("math",ModConfig.Delay.fixed(45000));c.setDelay("trivia",ModConfig.Delay.random(2700,2900));
@@ -70,7 +78,7 @@ class RecentServerLogsTest {
         assertEquals(729,loaded.get().countdown.totalSeconds());assertFalse(loaded.get().countdown.sound);
         for(var entry:files.entrySet())assertEquals(entry.getValue(),Files.readString(entry.getKey()));
     }
-    @ParameterizedTest @ValueSource(strings={"141","142"})
+    @ParameterizedTest @ValueSource(strings={"141","142","143"})
     void liveAndLogCopiesUseTheirLevelIntervalAndServerResultsCancelPendingReplies(String version) throws Exception {
         var settings=new ConfigManager(temp);settings.get().setDelay("",ModConfig.Delay.fixed(60000));
         for(String game:List.of("math","trivia"))for(var level:GameDifficulty.values())

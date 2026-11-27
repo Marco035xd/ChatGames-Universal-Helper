@@ -13,16 +13,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.4.2"><img alt="Versión 1.4.2" src="https://img.shields.io/badge/versi%C3%B3n-1.4.2-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/tag/v1.4.3"><img alt="Versión 1.4.3" src="https://img.shields.io/badge/versi%C3%B3n-1.4.3-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <img alt="Minecraft Java 26.2" src="https://img.shields.io/badge/Minecraft-26.2-8be0ad?style=flat-square&amp;labelColor=172535" />
   <img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-aec0cd?style=flat-square&amp;labelColor=172535" />
   <img alt="Java 25 o superior" src="https://img.shields.io/badge/Java-25%2B-ffcf70?style=flat-square&amp;labelColor=172535" />
-  <a href="#verificacion"><img alt="117 pruebas aprobadas en 1.4.2" src="https://img.shields.io/badge/pruebas_en_1.4.2-117_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
+  <a href="#verificacion"><img alt="120 pruebas aprobadas en 1.4.3" src="https://img.shields.io/badge/pruebas_en_1.4.3-120_aprobadas-81e5d7?style=flat-square&amp;labelColor=172535" /></a>
   <a href="LICENSE"><img alt="Licencia MIT del código" src="https://img.shields.io/badge/c%C3%B3digo-MIT-aec0cd?style=flat-square&amp;labelColor=172535" /></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.2/chatgames-infection-server-1.4.2.jar"><strong>↓ Descargar JAR 1.4.2</strong></a>
+  <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.3/chatgames-infection-server-1.4.3.jar"><strong>↓ Descargar JAR 1.4.3</strong></a>
   &nbsp; · &nbsp;
   <a href="https://github.com/Marco035xd/ChatGames-Universal-Helper/releases">Todas las versiones</a>
   &nbsp; · &nbsp;
@@ -57,7 +57,7 @@
 ## 🚀 Empieza en cuatro pasos
 
 1. **Cierra Minecraft** e instala Fabric y Fabric API para **26.2**.
-2. Descarga [**chatgames-infection-server-1.4.2.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.2/chatgames-infection-server-1.4.2.jar) y colócalo en `mods`.
+2. Descarga [**chatgames-infection-server-1.4.3.jar**](https://github.com/Marco035xd/ChatGames-Universal-Helper/releases/download/v1.4.3/chatgames-infection-server-1.4.3.jar) y colócalo en `mods`.
 3. Si estás actualizando, retira el JAR anterior y conserva `config/chatgames-universal-helper/`.
 4. Entra al juego y pulsa **G** para abrir el centro de control.
 
@@ -193,20 +193,24 @@ El tiempo cuenta desde la recepción del **reto completo**, incluyendo cola y c�
 
 </details>
 
-## 🆕 Cuatro preguntas nuevas · 1.4.2
+## 🆕 Ocho preguntas nuevas · 1.4.3
 
-Se revisaron **7 rondas completas** de `2026-11-25-2.log.gz` y `2026-11-26-1.log.gz`: **4 de Trivia y 3 de Matemáticas**. Se añaden las cuatro preguntas con la respuesta exacta anunciada por el servidor; el banco incluido llega a **125 preguntas**.
+Se revisaron **16 rondas completas** de `2026-11-26-2.log.gz`: **11 de Trivia y 5 de Matemáticas**. Se añaden ocho preguntas con la respuesta exacta anunciada por el servidor; tres preguntas de Trivia ya estaban incorporadas. El banco incluido llega a **133 preguntas**.
 
 | Dificultad | Pregunta | Respuesta |
 | --- | --- | --- |
-| Fácil | ¿Cuántas ruedas tiene una bicicleta común? | **2** |
-| Normal | ¿En qué continente discurre el río Danubio? | **Europa** |
-| Fácil | ¿Qué animal parecido a un caballo tiene rayas blancas y negras? | **Cebra** |
-| Experto | ¿Qué piedra con tres escrituras ayudó a descifrar los jeroglíficos egipcios? | **Piedra de Rosetta** |
+| Fácil | ¿Qué color sale al mezclar pintura azul y amarilla? | **Verde** |
+| Experto | ¿Cuántos grados suman los ángulos interiores de un dodecágono plano? | **1800** |
+| Normal | ¿Cuál es la capital de Brasil? | **Brasilia** |
+| Fácil | ¿Cuál es la capital de Ecuador? | **Quito** |
+| Normal | ¿Cuántos grados suman los ángulos interiores de un cuadrilátero plano? | **360** |
+| Fácil | ¿Qué satélite natural orbita la Tierra? | **Luna** |
+| Normal | ¿Cómo se llama el lado opuesto al ángulo recto de un triángulo rectángulo? | **Hipotenusa** |
+| Fácil | ¿Qué figura redonda tiene todos sus puntos a igual distancia del centro? | **Circunferencia** |
 
-Los tres problemas matemáticos se resuelven con el motor existente. No se observan tipos nuevos ni cambios de formato. [Ver análisis y referencias](ANALISIS_CHATGAMES_2026_11_26_ES.md).
+Los cinco problemas matemáticos se resuelven con el motor existente, incluida la expresión experta `(1104 ÷ 12 - 17) × 4 + 512 ÷ 8 → 364`. Las preguntas escritas sobre ángulos y geometría pertenecen a Trivia. No se observan tipos nuevos ni cambios de formato. [Ver análisis y referencias](ANALISIS_CHATGAMES_2026_11_26_2_ES.md).
 
-Se mantienen las 12 preguntas de la actualización anterior, entre ellas Tritón, Merge sort, Ribosoma y Dijkstra. [Análisis de la actualización 1.4.1](ANALISIS_CHATGAMES_2026_11_24_2_3_ES.md).
+Se mantienen las preguntas anteriores, incluidas bicicleta → 2, Danubio → Europa, Cebra y Piedra de Rosetta. [Análisis de la actualización 1.4.2](ANALISIS_CHATGAMES_2026_11_26_ES.md).
 
 ## 🆕 Compatible con el nuevo sistema de Infection
 
@@ -297,7 +301,7 @@ La ayuda de `/cgedit help 1` a `/cgedit help 4` tiene autocompletado y comandos 
 
 ## 🧪 Comprobado con retos reales de los registros
 
-**117 pruebas JUnit aprobadas en 1.4.2.** Incluyen las 328 rondas de octubre, las 26 de la actualización anterior y las 14 de los logs del 23 y 24 de noviembre, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias. Las diez rondas del día 23 ya estaban en el corpus anterior. Las pruebas de los registros recientes reproducen las 23 rondas del día 24 y las 7 de los días 25 y 26, además de comprobar disponibilidad tras actualizar, conservación de tiempos por dificultad y cancelación de pendientes. Se reutilizan las mismas tres pruebas de integración para ambas muestras. Los ocho casos de 1.4.0 verifican los niveles de las diez categorías, herencia, decimales, guardado, comandos, perfiles y selección de tiempos con anuncios reales.
+**120 pruebas JUnit aprobadas en 1.4.3.** Incluyen las 328 rondas de octubre, las 26 de la actualización anterior y las 14 de los logs del 23 y 24 de noviembre, además de cancelación, deduplicación, aprendizaje, contador, perfiles y conservación de preferencias. Las diez rondas del día 23 ya estaban en el corpus anterior. Las pruebas de los registros recientes reproducen las 23 rondas del día 24, las 7 de los días 25 y 26 y las 16 del último archivo del día 26, además de comprobar disponibilidad tras actualizar, conservación de tiempos por dificultad y cancelación de pendientes. Se reutilizan las mismas tres pruebas de integración para las tres muestras. Los ocho casos de 1.4.0 verifican los niveles de las diez categorías, herencia, decimales, guardado, comandos, perfiles y selección de tiempos con anuncios reales.
 
 La GUI de 1.4.0 se comprobó en Minecraft 26.2: apertura con G, tiempos independientes por nivel, guardado decimal, cancelación y separación de Matemáticas y Trivia. Esta comprobación se hizo en un mundo local.
 
@@ -308,7 +312,7 @@ El ejemplo Experto se reprodujo en un mundo local de Minecraft 26.2: respuesta *
 <details>
 <summary><strong>Compatibilidad y datos locales</strong></summary>
 
-La actualización mantiene las preferencias de 1.2.5 a 1.4.1: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los perfiles anteriores a 1.4.0 usan sus tiempos base en los tres niveles; los perfiles de 1.4.0 y posteriores conservan los intervalos propios por nivel. El nombre visible y el JAR pasan a **ChatGames Infection Server**; el identificador interno y la carpeta de configuración se conservan para mantener la compatibilidad. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
+La actualización mantiene las preferencias de 1.2.5 a 1.4.2: tiempos decimales, juegos pausados, perfiles, contador y respuestas personales. Los perfiles anteriores a 1.4.0 usan sus tiempos base en los tres niveles; los perfiles de 1.4.0 y posteriores conservan los intervalos propios por nivel. El nombre visible y el JAR pasan a **ChatGames Infection Server**; el identificador interno y la carpeta de configuración se conservan para mantener la compatibilidad. Los diccionarios y respuestas aprendidas conservan su prioridad. Las respuestas desconocidas o ambiguas pueden quedar sin enviar; la IA externa es opcional.
 
 La configuración y los perfiles se guardan en `config/chatgames-universal-helper/`. El historial es temporal. No se distribuyen registros completos, conversaciones, configuraciones privadas ni mundos de pruebas.
 
